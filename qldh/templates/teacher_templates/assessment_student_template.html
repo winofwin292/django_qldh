@@ -1,0 +1,107 @@
+{% extends 'teacher_templates/base_template.html' %}
+
+{% block page_title %}
+    Danh sách học sinh
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Thông tin lớp học</h3>
+                </div>
+                <div class="card-body">
+                    <p>Lớp: {{ lop_cn.ten_lop }}</p>
+                    <p>Sỉ số: {{ lop_cn.si_so }}</p>
+                    <p>Phòng học: {{ lop_cn.phong.ten_phong }}</p>
+                    <p>Giáo viên chủ nhiệm: {{ user.last_name }} {{ user.first_name }}</p>
+                </div>
+            </div>
+        <br>
+            {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                                
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách học sinh</h3>
+
+                            <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                <div class="input-group-append">
+                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                <th>Mã Học sinh</th>
+                                <th>Họ và Tên</th>
+                                <th>Năm học</th>
+                                <th>Xếp loại</th>
+                                <th>Hạnh kiểm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for kq in kqht %}
+                                <tr>
+                                <td>{{ kq.mahs.mahs.username }}</td>
+                                <td>{{ kq.mahs.mahs.last_name }} {{ kq.mahs.mahs.first_name }}</td>
+                                <td>{{ kq.nam_hoc.mo_ta }}</td>
+                                <td>{{ kq.xep_loai }}</td>
+                                <td>{{ kq.hanh_kiem }}</td>
+                                <td>
+                                    <a href="{% url 'edit_assessment_student' kq.mahs.mahs.username %}" class="btn btn-success">Chi tiết</a>
+                                </td>
+                                </tr>
+                                {% endfor %}
+                                
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

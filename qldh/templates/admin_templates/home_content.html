@@ -1,0 +1,88 @@
+{% extends 'admin_templates/base_template.html' %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+          <!-- Small boxes (Stat box) -->
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                <div class="inner">
+                  <h3>{{ so_giao_vien }}</h3>
+
+                  <p>Tổng số giáo viên</p>
+                </div>
+                <div class="icon">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <a href="{% url 'manage_teacher' %}" class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3>{{ so_hoc_sinh }}</h3>
+
+                  <p>Tổng số học sinh</p>
+                </div>
+                <div class="icon">
+                  <i class="fas fa-user-graduate"></i>
+                </div>
+                <a href="{% url 'manage_student' %}" class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3>{{ so_lop_hoc }}</h3>
+
+                  <p>Tổng số lớp học</p>
+                </div>
+                <div class="icon">
+                  <i class="fas fa-chalkboard"></i>
+                </div>
+                <a href="{% url 'manage_classroom' %}" class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3>{{ so_mon_hoc }}</h3>
+
+                  <p>Tổng số môn học</p>
+                </div>
+                <div class="icon">
+                  <i class="fas fa-book"></i>
+                </div>
+                <a href="#" class="small-box-footer">Chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+
+          </div>
+          <!-- /.row -->
+
+        
+        </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+  {% block custom_js %}
+
+
+
+  {% endblock custom_js %}

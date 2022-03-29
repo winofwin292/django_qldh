@@ -1,0 +1,54 @@
+{% extends 'student_templates/base_template.html' %}
+
+{% block page_title %}
+    Thông tin lớp học
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Thông tin lớp học</h3>
+                </div>
+                <div class="card-body">
+                    <p>Lớp: <b>{{ lop.ten_lop }}</b></p>
+                    <p>Phòng học: <b>{{ lop.phong.ten_phong }}</b></p>
+                    <p>Giáo viên chủ nhiệm: <b>{{ lop.giao_vien_chu_nhiem.magv.last_name }} {{ lop.giao_vien_chu_nhiem.magv.first_name }}</b></p>
+                    <p>Số điện thoại giáo viên chủ nhiệm: <b>{{ lop.giao_vien_chu_nhiem.so_dien_thoai }}</b></p>
+                    <p>Email giáo viên chủ nhiệm: <b>{{ lop.giao_vien_chu_nhiem.magv.email }}</b></p>
+                </div>
+            </div>
+        <br>
+            {% if messages %}
+                <div class="form-group">
+                <div class="col-12">
+                    {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    {% elif message.tags == "success" %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                </div>
+                {% endif %}
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

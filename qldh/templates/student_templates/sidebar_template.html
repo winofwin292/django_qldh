@@ -1,0 +1,124 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="{% url 'student_home' %}" class="brand-link">
+        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text font-weight-light">ESchool</span>
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="{{ user.hocsinh.profile_pic }}" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="{% url 'student_home' %}" class="d-block">{{ user.last_name }} {{ user.first_name }}</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" id="siderbar" name="siderbar">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+
+            <li class="nav-item">
+              {% url 'student_home' as student_home %}
+              <a href="{{ student_home }}" class="nav-link {% if request.path == student_home %} active {% endif %}">
+                <i class="nav-icon fas fa-school"></i>
+                <p>
+                  Trang chủ
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'view_classroom' as view_classroom %}
+              <a href="{{ view_classroom }}" class="nav-link {% if request.path == view_classroom %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Thông tin lớp học
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'view_personal_mark' as view_personal_mark %}
+              <a href="{{ view_personal_mark }}" class="nav-link {% if request.path == view_personal_mark %} active {% endif %}">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Xem điểm số cá nhân
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'view_result_study' as view_result_study %}
+              <a href="{{ view_result_study }}" class="nav-link {% if request.path == view_result_study %} active {% endif %}">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Xem kết quả học tập
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'profile_student' as profile_student %}
+              <a href="{{ profile_student }}" class="nav-link {% if request.path == profile_student %} active {% endif %}">
+                <i class="nav-icon fas fa-user"></i>
+                <p>
+                  Thông tin cá nhân
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'change_password_student' as change_password_student %}
+              <a href="{{ change_password_student }}" class="nav-link {% if request.path == change_password_student %} active {% endif %}">
+                <i class="nav-icon fas fa-user"></i>
+                <p>
+                  Đổi mật khẩu
+                </p>
+              </a>
+            </li>
+<!--
+{#            <li class="nav-item">#}
+{#              {% url 'assessment_student' as assessment_student %}#}
+{#              <a href="{{ assessment_student }}" class="nav-link {% if request.path == assessment_student %} active {% endif %}">#}
+{#                <i class="nav-icon fas fa-th"></i>#}
+{#                <p>#}
+{#                  Đánh giá học sinh#}
+{#                </p>#}
+{#              </a>#}
+{#            </li>#}
+{##}
+{#            <li class="nav-item">#}
+{#              {% url 'profile_teacher' as profile_teacher %}#}
+{#              <a href="{{ profile_teacher }}" class="nav-link {% if request.path == profile_teacher %} active {% endif %}">#}
+{#                <i class="nav-icon fas fa-user"></i>#}
+{#                <p>#}
+{#                  Thông tin cá nhân#}
+{#                </p>#}
+{#              </a>#}
+{#            </li>#}
+{##}
+{#            <li class="nav-item">#}
+{#              {% url 'change_password' as change_password %}#}
+{#              <a href="{{ change_password }}" class="nav-link {% if request.path == change_password %} active {% endif %}">#}
+{#                <i class="nav-icon fas fa-user"></i>#}
+{#                <p>#}
+{#                  Đổi mật khẩu#}
+{#                </p>#}
+{#              </a>#}
+{#            </li>#}
+-->
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+
+      </div>
+      <!-- /.sidebar -->
+    </aside>

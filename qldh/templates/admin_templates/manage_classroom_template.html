@@ -1,0 +1,256 @@
+{% extends 'admin_templates/base_template.html' %}
+
+{% block page_title %}
+    Quản lý lớp học
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#formModal"
+                    data-bs-whatever="@getbootstrap">
+                + Thêm lớp mới
+            </button>
+            <!-- Thêm từ excel -->
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#fileModal"
+                    data-bs-whatever="@getbootstrap">
+                + Thêm từ excel
+            </button>
+            <br>
+            <!-- Thêm từ file -->
+            <div class="modal fade" id="fileModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="fileModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="fileModalLabel">Thêm lớp học</h5>
+                            <button type="button" id="closeFileModal" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% with file_name="ThongTinLopHoc.xlsx" %}
+                                <div>
+                                    <a class="btn btn-primary btn-sm"
+                                       href="{% url 'download_excel' file_name=file_name %}"
+                                       role="button">Tải xuống file mẫu</a>
+                                </div><br>
+                            {% endwith %}
+                            <form action="{% url "add_classroom_from_xls" %}" method="post"
+                                  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="file" title="Upload excel file"
+                                       accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                       name="excel_file" class="form-control" required="required">
+                                <p>
+                                    <br>
+                                    <input type="submit" value="Tải lên" class="btn btn-primary btn-sm">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="fileModal2" aria-hidden="true" aria-labelledby="fileModalLabel2" tabindex="-1"
+                 data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="fileModalLabel2">Xác nhận</h5>
+                        </div>
+                        <div class="modal-body">
+                            File đã chọn sẽ bị mất, bạn có chắc muốn đóng
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="confirmclosed_file" class="btn btn-danger btn-sm">Xác nhận đóng
+                            </button>
+                            <button class="btn btn-primary btn-sm" data-bs-target="#fileModal" data-bs-toggle="modal"
+                                    data-bs-dismiss="modal">
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thêm từ form -->
+            <div class="modal fade" id="formModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="formModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="formModalLabel">Thêm lớp học</h5>
+                            <button id="closeFormModal" type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% url 'add_classroom_save' as action_path %}
+                            {% include 'admin_templates/form_template.html' with messages=messages form=form action_path=action_path button_text="Thêm lớp học" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="formModal2" aria-hidden="true" aria-labelledby="formModalLabel2" tabindex="-1"
+                 data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="formModalLabel2">Xác nhận</h5>
+                        </div>
+                        <div class="modal-body">
+                            Đóng sẽ mất những gì bạn đã nhập, bạn có chắc muốn đóng
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="confirmclosed_form" class="btn btn-danger btn-sm">Xác nhận đóng
+                            </button>
+                            <button class="btn btn-primary btn-sm" data-bs-target="#formModal" data-bs-toggle="modal"
+                                    data-bs-dismiss="modal">
+                                Hủy
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-4">
+                    <label>Chọn khối: </label>
+                    <select class="form-control" name="khoi" id="khoi">
+                        <option value="all" selected="selected">Tất cả</option>
+                        {% for k in khoi %}
+                            <option value="{{ k }}">{{ k }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            {% if messages %}
+                <div class="form-group">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"
+                                     style="margin-top: 10px;">
+                                    {{ message }}
+                                    <button id="close" type="button" class="close" data-dismiss="alert"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% elif message.tags == "success" %}
+                                <div id="message" class="alert alert-success alert-dismissible fade show" role="alert"
+                                     style="margin-top: 10px;">
+                                    {{ message }}
+                                    <button id="close" type="button" class="close" data-dismiss="alert"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách lớp học</h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table_search" class="form-control float-right"
+                                           placeholder="Search">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" id="classroom_data">
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+{% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+        $(document).ready(function () {
+
+            $("#close").click(function () {
+                $("#message").hide("slow");
+            });
+
+            $('#closeFileModal').click(function () {
+                $('#fileModal2').modal('show');
+                $('#confirmclosed_file').click(function () {
+                    $('#fileModal2').modal('hide');
+                    $('#fileModal').modal('hide');
+                    $('#fileModal form')[0].reset();
+                });
+            });
+
+            $('#closeFormModal').click(function () {
+                $('#formModal2').modal('show');
+                $('#confirmclosed_form').click(function () {
+                    $('#formModal2').modal('hide');
+                    $('#formModal').modal('hide');
+                    $('#formModal form')[0].reset();
+                });
+            });
+
+            function get_classroom() {
+                var khoi = $("#khoi").val()
+                $.ajax({
+                    url: '{% url 'admin_get_classroom' %}',
+                    type: 'POST',
+                    data: {khoi: khoi},
+                })
+                    .done(function (response) {
+                        var json_data = JSON.parse(response);
+                        if (json_data.length > 0) {
+                            var html_data = "<table class='table table-hover text-nowrap'> <thead> <tr> <th>Mã lớp</th> <th>Tên lớp</th> <th>Phòng</th> <th>Sỉ số</th> <th>Giáo viên chủ nhiệm</th> <th>Khối</th> <th>Năm học</th> </tr> </thead> <tbody>";
+                            for (key in json_data) {
+                                html_data += " <tr>";
+                                html_data += "<td>" + json_data[key]["ma_lop"] + "</td>";
+                                html_data += "<td>" + json_data[key]["ten_lop"] + "</td>";
+                                html_data += "<td>" + json_data[key]["phong"] + "</td>";
+                                html_data += "<td>" + json_data[key]["si_so"] + "</td>";
+                                html_data += "<td>" + json_data[key]["giao_vien_chu_nhiem"] + "</td>";
+                                html_data += "<td>" + json_data[key]["khoi"] + "</td>";
+                                html_data += "<td>" + json_data[key]["nam_hoc"] + "</td>";
+                                html_data += "<td><a href='/qldh/chinh_sua_lop_hoc/" + json_data[key]["ma_lop"] + "/' class='btn btn-success btn-sm'>Chỉnh sửa</a> ";
+                                html_data += "<a href='/qldh/xoa_lop_hoc/" + json_data[key]["ma_lop"] + "/' class='btn btn-danger btn-sm' onclick='return confirm(" + "&quot;Bạn có thật sự muốn xóa lớp học này?&quot;" + ");'>Xóa</a></td>";
+                                html_data += "</tr>";
+                            }
+                            html_data += " </tbody> </table>";
+                            $("#classroom_data").html(html_data);
+                        } else {
+                            $("#classroom_data").html("<h5 class='card-text text-center text-red'>Không có lớp nào thuộc khối này cả.</h5>");
+                        }
+                    })
+                    .fail(function () {
+                        alert("Vui lòng chọn khối hợp lệ.")
+                        $("#classroom_data").html("");
+                    });
+            }
+
+            get_classroom();
+
+            $("#khoi").change(function () {
+                get_classroom();
+            });
+        })
+    </script>
+{% endblock custom_js %}

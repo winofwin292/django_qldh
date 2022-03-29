@@ -1,0 +1,35 @@
+{% extends 'teacher_templates/base_template.html' %}
+
+{% block page_title %}
+    Chỉnh sửa điểm số
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Chỉnh sửa điểm số</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    {% url 'edit_mark_save' tuition_id=tuition_id ma_lop=ma_lop mark_id=mark_id as action_path %}
+                    {% include 'teacher_templates/form_template.html' with messages=messages form=form action_path=action_path button_text="Lưu" %}
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

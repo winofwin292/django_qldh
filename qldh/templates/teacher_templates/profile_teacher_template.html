@@ -1,0 +1,131 @@
+{% extends 'teacher_templates/base_template.html' %}
+
+{% block page_title %}
+    Thông tin cá nhân
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông tin cá nhân</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form">
+                        {% csrf_token %}
+
+                        
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Mã giáo viên: </label>
+                                <input type="text" class="form-control" name="username" value="{{ user.username }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email: </label>
+                                <input type="text" class="form-control" name="email" value="{{ user.email }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Họ: </label>
+                                <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tên: </label>
+                                <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ngày Sinh: </label>
+                                <input type="text" class="form-control" name="ngay_sinh" value="{{ user.giaovien.ngay_sinh|date:"d-m-Y" }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Quê quán: </label>
+                                <input type="text" class="form-control" name="que_quan" value="{{ user.giaovien.que_quan }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Số điện thoại: </label>
+                                <input type="text" class="form-control" name="so_dien_thoai" value="{{ user.giaovien.so_dien_thoai }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Môn giảng dạy: </label>
+                                <input type="text" class="form-control" name="day_mon" value="{{ user.giaovien.day_mon.ten_mon }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Giới tính: </label>
+                                <input type="text" class="form-control" name="gioi_tinh" value="{{ user.giaovien.gioi_tinh }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Trình độ học vấn: </label>
+                                <input type="text" class="form-control" name="last_name" value="{{ user.giaovien.trinh_do.mo_ta_trinh_do }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Chủ nhiệm lớp: </label>
+                                <input type="text" class="form-control" name="last_name" value="{{ lop_cn.ten_lop }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ảnh đại diện: </label>
+                                <img src="{{ user.giaovien.profile_pic }}" class="img-circle elevation-2" alt="User Image" width="15%">
+                            </div>
+
+
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

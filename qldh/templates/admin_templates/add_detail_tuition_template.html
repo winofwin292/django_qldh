@@ -1,0 +1,99 @@
+{% extends 'admin_templates/base_template.html' %}
+
+{% block page_title %}
+    Thêm mới chi tiết giảng dạy
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thêm mới chi tiết giảng dạy</h3>
+                    </div>
+                    <!-- /.card-header -->
+                        <form role="form" method="POST" action="{% url 'add_detail_tuition_save' gd.id %}">
+                            {% csrf_token %}
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <label>Thông tin </label>
+                                    <input type="text" class="form-control" id="id_tuition" name="id_tuition" readonly value="{{ gd.ma_lop.ten_lop }} - Môn {{ gd.magv.day_mon.ten_mon }} - {{ gd.magv.magv.last_name }} {{ gd.magv.magv.first_name }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Thứ </label>
+                                    <select class="form-control" name="thu" id="thu">
+                                        {% for t in thu %}
+                                        <option value="{{ t }}">{{ t }}</option>
+                                        {%  endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Buổi </label>
+                                    <select class="form-control" name="buoi" id="buoi">
+                                        {% for b in buoi %}
+                                        <option value="{{ b }}">{{ b }}</option>
+                                        {%  endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tiết bắt đầu </label>
+                                    <input type="number" class="form-control" id="tiet_bd" name="tiet_bd" max="5" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tiết kết thúc </label>
+                                    <input type="number" class="form-control" id="tiet_kt" name="tiet_kt" max="5" min="1">
+                                </div>
+                                <input type="hidden" id="tuition_id" name="tuition_id" value="{{ gd.id }}">
+
+                                <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Lưu</button>
+                            </div>
+                        </form>
+                        <!-- /.card-body -->
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+{% endblock main_content %}

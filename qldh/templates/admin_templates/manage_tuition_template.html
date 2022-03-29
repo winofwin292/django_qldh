@@ -1,0 +1,182 @@
+{% extends 'admin_templates/base_template.html' %}
+
+{% block page_title %}
+    Quản lý Giảng dạy
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <a class="btn btn-primary" href="{% url 'add_tuition' %}" role="button">+ Thêm giảng dạy</a> <br/>&nbsp;
+        <div class="card col-md-4">
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Năm học: </label>
+                    <select class="form-control" name="nam_hoc" id="nam_hoc">
+                      <option value="all">Tất cả</option>
+                        {% for nh in nam_hoc %}
+                            <option value="{{ nh.nam_hoc }}">{{ nh.mo_ta }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Học kỳ: </label>
+                    <select class="form-control" name="hoc_ky" id="hoc_ky">
+                      <option value="all">Tất cả</option>
+                        {% for hk in hoc_ky %}
+                            <option value="{{ hk }}">{{ hk }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-primary" id="hien_thi" name="hien_thi">Hiển Thị</button>
+            </div>
+        </div>
+            {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                                
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Chi tiết giảng dạy</h3>
+
+                            <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                <div class="input-group-append">
+                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" id = "tuition_data">
+{#                            <table class="table table-hover text-nowrap">#}
+{#                            <thead>#}
+{#                                <tr>#}
+{#                                <th>STT</th>#}
+{#                                <th>Giáo Viên</th>#}
+{#                                <th>Môn</th>#}
+{#                                <th>Mã lớp</th>#}
+{#                                <th>Học kỳ</th>#}
+{#                                <th>Năm học</th>#}
+{#                                </tr>#}
+{#                            </thead>#}
+{#                            <tbody>#}
+{#                                {% for tt in Tuition %}#}
+{#                                <tr>#}
+{#                                <td>{{ forloop.counter }}</td>#}
+{#                                <td>{{ tt.magv.magv.last_name }} {{ tt.magv.magv.first_name }}</td>#}
+{#                                <td>{{ tt.magv.day_mon.ten_mon }}</td>#}
+{#                                <td>{{ tt.ma_lop.ten_lop }}</td>#}
+{#                                <td>{{ tt.hoc_ky }}</td>#}
+{#                                <td>{{ tt.nam_hoc.mo_ta }}</td>#}
+{#                                <td>#}
+{#                                    <a href="{% url 'manage_detail_tuition' tt.id %}" class="btn btn-info">Chi tiết</a>#}
+{#                                    <a href="{% url 'edit_tuition' tt.id %}" class="btn btn-success">Chỉnh sửa</a>#}
+{#                                    <a href="{% url 'delete_tuition' tt.id %}" class="btn btn-danger" onclick="return confirm('Bạn có thật sự muốn xóa?');">Xóa</a>#}
+{#                                </td>#}
+{#                                </tr>#}
+{#                                {% endfor %}#}
+{#                                #}
+{#                            </tbody>#}
+{#                            </table>#}
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+        $(document).ready(function(){
+
+
+            $("#hien_thi").click(function () {
+                var nam_hoc = $("#nam_hoc").val()
+                var hoc_ky = $("#hoc_ky").val()
+                var i =1;
+
+                //console.log(nam_hoc)
+                //console.log(hoc_ky)
+                $.ajax({
+                    url:'{% url 'admin_get_tuition' %}',
+                    type:'POST',
+                    data:{nam_hoc:nam_hoc, hoc_ky:hoc_ky},
+                })
+
+                .done(function(response){
+                    var json_data = JSON.parse(response);
+                    if(json_data.length>0){
+                        var html_data = "<table class='table table-hover text-nowrap'> <thead> <tr> <th>STT</th> <th>Giáo viên</th> <th>Môn</th> <th>Mã lớp</th> <th>Học kỳ</th> <th>Năm học</th> </tr> </thead> <tbody>";
+                        for (key in json_data)
+                        {
+                            html_data+=" <tr>";
+                            html_data+="<td>"+ i +"</td>";
+                            html_data+="<td>"+ json_data[key]["giao_vien"] +"</td>";
+                            html_data+="<td>"+ json_data[key]["mon"] +"</td>";
+                            html_data+="<td>"+ json_data[key]["lop"] +"</td>";
+                            html_data+="<td>"+ json_data[key]["hoc_ky"] +"</td>";
+                            html_data+="<td>"+ json_data[key]["nam_hoc"] +"</td>";
+                            html_data+="<td><a href='/qldh/chi_tiet_giang_day/"+json_data[key]["id"]+"/' class='btn btn-info'>Chi tiết</a> ";
+                            html_data+="<a href='/qldh/chinh_sua_giang_day/"+ json_data[key]["id"] +"/' class='btn btn-success'>Chỉnh sửa</a> ";
+                            html_data+="<a href='/qldh/xoa_giang_day/"+json_data[key]["id"]+"/' class='btn btn-danger' onclick='return confirm("+"&quot;Press a button!&quot;"+");'>Xóa</a></td>";
+                            html_data+="</tr>";
+                            i++;
+                        }
+                        html_data+=" </tbody> </table>";
+                        $("#tuition_data").html(html_data);
+                        //console.log(response)
+                    }else
+                    {
+                        $("#tuition_data").html("<h5 class='card-text text-center text-red'>Năm học và học kỳ này chưa xếp giảng dạy.</h5>");
+                    }
+                })
+                .fail(function(){
+                    alert("Vui lòng chọn năm học và học kỳ hợp lệ.")
+                    $("#tuition_data").html("");
+                });
+            })
+        })
+
+    </script>
+
+{%  endblock custom_js %}

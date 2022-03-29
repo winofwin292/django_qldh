@@ -1,0 +1,121 @@
+{% extends 'admin_templates/base_template.html' %}
+
+{% block page_title %}
+    Chỉnh sửa môn học | Mã môn : {{ mh.ma_mon }}
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Chỉnh sửa môn học</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="POST" action="{% url 'edit_subject_save' mh.ma_mon %}">
+                        {% csrf_token %}
+
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Mã môn: </label>
+                                <input type="text" class="form-control" name="ma_mon" id="ma_mon" value="{{ mh.ma_mon }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Tên môn: </label>
+                                <input type="text" class="form-control" name="ten_mon" id="ten_mon" value="{{ mh.ten_mon }}">
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+
+{% block custom_js %}
+    {% comment %} Checking if email and username already exists or not usin Ajax {% endcomment %}
+
+    <script>
+        $(document).ready(function(){
+            // keyup event will be triggered when user leaves keyboard
+            $("#ten_mon").keyup(function(){
+                var ten_mon = $(this).val();
+
+                if(ten_mon!=""){
+                    $.ajax({
+                        url : '{% url 'kiem_tra_ten_mon' %}',
+                        type : 'POST',
+                        data : {ten_mon:ten_mon}
+                    })
+                    .done(function(response){
+                        //console.log(response);
+
+                        if(response == "True"){
+                            $(".loi_ten_mon").remove();
+                            $("<span class='loi_ten_mon' id='loi_ten_mon' style='color: red; padding: 5px; font-weight: bold;'> Tên môn đã tồn tại. </span>").insertAfter("#ten_mon")
+                        }
+                        else{
+                            $(".loi_ten_mon").remove();
+                            $("<span class='loi_ten_mon' id='loi_ten_mon' style='color: green; padding: 5px; font-weight: bold;'> Tên môn hợp lệ. </span>").insertAfter("#ten_mon")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".loi_ten_mon").remove();
+                }
+
+            })
+        })
+    </script>
+
+  {% endblock custom_js %}

@@ -1,0 +1,299 @@
+{% extends 'admin_templates/base_template.html' %}
+
+{% block page_title %}
+    Quản lý môn học
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+
+    <section class="content">
+        <div class="container-fluid">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#formModal"
+                    data-bs-whatever="@getbootstrap">
+                + Thêm môn học
+            </button>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#fileModal"
+                    data-bs-whatever="@getbootstrap">
+                + Thêm từ excel
+            </button>
+            <br>
+            &nbsp;
+<!-- Thêm từ file -->
+            <div class="modal fade" id="fileModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="fileModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="fileModalLabel">Thêm môn học</h5>
+                            <button type="button" id="closeFileModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% with file_name="DSMon.xlsx" %}
+                                <div>
+                                    <a class="btn btn-primary btn-sm" href="{% url 'download_excel' file_name=file_name %}"
+                                       role="button">Tải xuống file mẫu</a>
+                                </div><br>
+                            {% endwith %}
+                            <form action="{% url "add_subject_from_xls" %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="file" title="Upload excel file"
+                                       accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                       name="excel_file" class="form-control" required="required">
+                                <p>
+                                    <br>
+                                    <input type="submit" value="Tải lên" class="btn btn-primary btn-sm">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="fileModal2" aria-hidden="true" aria-labelledby="fileModalLabel2" tabindex="-1" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="fileModalLabel2">Xác nhận</h5>
+                        </div>
+                        <div class="modal-body">
+                            File đã chọn sẽ bị mất, bạn có chắc muốn đóng
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="confirmclosed_file" class="btn btn-danger btn-sm">Xác nhận đóng</button>
+                            <button class="btn btn-primary btn-sm" data-bs-target="#fileModal" data-bs-toggle="modal" data-bs-dismiss="modal">
+                                Hủy
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thêm từ form -->
+            <div class="modal fade" id="formModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                 aria-labelledby="formModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="formModalLabel">Thêm môn học</h5>
+                            <button id="closeFormModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form" method="POST" action="{% url 'add_subject_save' %}">
+                                {% csrf_token %}
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="ma_mon" id="ma_mon"
+                                           placeholder="Nhập mã môn">
+                                    <label for="ma_mon">Nhập mã môn</label>
+                                </div>
+                                <br>
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" name="ten_mon" id="ten_mon"
+                                           placeholder="Nhập tên môn">
+                                    <label for="ten_mon">Nhập tên môn</label>
+                                </div>
+                                <br>
+                                <button type="submit" class="btn btn-primary btn-sm">Thêm môn học</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="formModal2" aria-hidden="true" aria-labelledby="formModalLabel2" tabindex="-1" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="formModalLabel2">Xác nhận</h5>
+                        </div>
+                        <div class="modal-body">
+                            Đóng sẽ mất những gì bạn đã nhập, bạn có chắc muốn đóng
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="confirmclosed_form" class="btn btn-danger btn-sm">Xác nhận đóng</button>
+                            <button class="btn btn-primary btn-sm" data-bs-target="#formModal" data-bs-toggle="modal" data-bs-dismiss="modal">
+                                Hủy
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {% if messages %}
+                <div class="form-group">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"
+                                     style="margin-top: 10px;">
+                                    {{ message }}
+                                    <button id="close" type="button" class="close" data-dismiss="alert"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% elif message.tags == "success" %}
+                                <div id="message" class="alert alert-success alert-dismissible fade show" role="alert"
+                                     style="margin-top: 10px;">
+                                    {{ message }}
+                                    <button id="close" type="button" class="close" data-dismiss="alert"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Chi tiết môn học</h3>
+
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table_search" class="form-control float-right"
+                                           placeholder="Search">
+
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default"><i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>Mã môn</th>
+                                    <th>Tên môn</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for m in mh %}
+                                    <tr>
+                                        <td>{{ m.ma_mon }}</td>
+                                        <td>{{ m.ten_mon }}</td>
+                                        <td>
+                                            <a href="{% url 'edit_subject' m.ma_mon %}" class="btn btn-success btn-sm">Chỉnh sửa</a>
+                                            <a href="{% url 'delete_subject' m.ma_mon %}" class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Bạn có thật sự muốn xóa?');">Xóa</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#close").click(function () {
+                $("#message").hide("slow");
+            });
+
+            $('#closeFormModal').click(function () {
+                $('#formModal2').modal('show');
+                $('#confirmclosed_form').click(function () {
+                    $('#formModal2').modal('hide');
+                    $('#formModal').modal('hide');
+                    $('#formModal form')[0].reset();
+                    $(".loi_ma_mon").remove();
+                    $(".loi_ten_mon").remove();
+                });
+            });
+
+            $('#closeFileModal').click(function () {
+                $('#fileModal2').modal('show');
+                $('#confirmclosed_file').click(function () {
+                    $('#fileModal2').modal('hide');
+                    $('#fileModal').modal('hide');
+                    $('#fileModal form')[0].reset();
+                    $(".loi_ma_mon").remove();
+                    $(".loi_ten_mon").remove();
+                });
+            });
+
+            $("#ma_mon").keyup(function () {
+                var ma_mon = $(this).val();
+
+                if (ma_mon != "") {
+                    $.ajax({
+                        url: '{% url 'kiem_tra_ma_mon' %}',
+                        type: 'POST',
+                        data: {ma_mon: ma_mon}
+                    })
+                        .done(function (response) {
+                            //console.log(response);
+
+                            if (response == "True") {
+                                $(".loi_ma_mon").remove();
+                                $("<span class='loi_ma_mon' id='loi_ma_mon' style='color: red; padding: 5px; font-weight: bold;'> Mã môn đã tồn tại. </span>").insertAfter("#ma_mon")
+                            } else {
+                                $(".loi_ma_mon").remove();
+                                $("<span class='loi_ma_mon' id='loi_ma_mon' style='color: green; padding: 5px; font-weight: bold;'> Mã môn hợp lệ. </span>").insertAfter("#ma_mon")
+                            }
+                        })
+
+                        .fail(function () {
+                            console.log("Failed");
+                        })
+                } else {
+                    $(".loi_ma_mon").remove();
+                }
+
+            })
+
+            $("#ten_mon").keyup(function () {
+                var ten_mon = $(this).val();
+
+                if (ten_mon != "") {
+                    $.ajax({
+                        url: '{% url 'kiem_tra_ten_mon' %}',
+                        type: 'POST',
+                        data: {ten_mon: ten_mon}
+                    })
+                        .done(function (response) {
+                            //console.log(response);
+
+                            if (response == "True") {
+                                $(".loi_ten_mon").remove();
+                                $("<span class='loi_ten_mon' id='loi_ten_mon' style='color: red; padding: 5px; font-weight: bold;'> Tên môn đã tồn tại. </span>").insertAfter("#ten_mon")
+                            } else {
+                                $(".loi_ten_mon").remove();
+                                $("<span class='loi_ten_mon' id='loi_ten_mon' style='color: green; padding: 5px; font-weight: bold;'> Tên môn hợp lệ. </span>").insertAfter("#ten_mon")
+                            }
+                        })
+
+                        .fail(function () {
+                            console.log("Failed");
+                        })
+                } else {
+                    $(".loi_ten_mon").remove();
+                }
+
+            })
+        });
+    </script>
+{% endblock custom_js %}

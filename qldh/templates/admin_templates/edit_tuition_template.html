@@ -1,0 +1,195 @@
+{% extends 'admin_templates/base_template.html' %}
+
+{% block page_title %}
+    Chỉnh sửa giảng dạy
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Chỉnh sửa giảng dạy</h3>
+                    </div>
+                    <!-- /.card-header -->
+                        <form role="form" method="POST" action="{% url 'edit_tuition_save' %}">
+                            {% csrf_token %}
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <label>Lớp </label>
+                                    <select class="form-control" name="lop_hoc" id="lop_hoc">
+                                        <option value="default">Chọn lớp</option>
+                                        {% for l in lop %}
+                                            <option value="{{ l.ma_lop }}" {% if l.ma_lop == tuition.ma_lop.ma_lop %}selected{% endif %}>{{ l.ten_lop }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Môn </label>
+                                    <select class="form-control" name="subject" id="subject">
+                                        {% for m in mon %}
+                                            <option value="{{ m.ma_mon }}" {% if m.ma_mon == tuition.magv.day_mon.ma_mon %}selected{% endif %}>{{ m.ten_mon }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="alert alert-danger" id="error_subject" style="display:none;">
+                                    </div>
+                                </div>
+                                <input type="hidden" id="magv" name="magv" value="{{ tuition.magv.magv }}">
+                                <input type="hidden" name="tuition_id" value="{{ tuition.id }}" />
+                                <div class="form-group">
+                                    <label>Giáo viên: </label>
+                                    <select class="form-control" name="teacher" id="teacher">
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Học Kỳ: </label>
+                                    <select class="form-control" name="hoc_ky" id="hoc_ky">
+{#                                        <option value="default">Học Kỳ:</option>#}
+                                        {% for hk in hoc_ky %}
+                                            <option value="{{ hk }}" {% if hk == tuition.hoc_ky %}selected{% endif %}>{{ hk }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Năm học </label>
+                                    <select class="form-control" name="nam_hoc" id="nam_hoc">
+                                        {% for nh in nam_hoc %}
+                                            <option value="{{nh.nam_hoc }}" {% if nh.nam_hoc == tuition.nam_hoc.nam_hoc %}selected{% endif %}>{{ nh.mo_ta }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Lưu</button>
+                            </div>
+                        </form>
+                        <!-- /.card-body -->
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+        $(document).ready(function(){
+            $("#subject").change(function () {
+                var subject = $("#subject").val()
+
+                console.log(subject)
+                $.ajax({
+                    url:'{% url 'get_teacher' %}',
+                    type:'POST',
+                    data:{subject:subject},
+                })
+
+                .done(function(response){
+                    var json_data = JSON.parse(response);
+                    if(json_data.length>0){
+                        var html_data = "";
+                        for (key in json_data)
+                        {
+                            html_data+="<option value='"+ json_data[key]["magv"] +"'>"+ json_data[key]["ho_ten"] +"</option>"
+                        }
+                        $("#teacher").html(html_data);
+                        $("#error_subject").html("");
+                        $("#error_subject").hide();
+                        //console.log(response)
+                    }else
+                    {
+                        $("#error_subject").html("Không có giáo viên nào dạy môn này cả.");
+                        $("#error_subject").show();
+                        $("#teacher").html(""); //Empty the Date Dropdown also
+                    }
+                })
+                .fail(function(){
+                    alert("Vui lòng chọn môn học hợp lệ.")
+                    $("#error_subject").html("");
+                });
+            })
+            var subject = $("#subject").val()
+            var magv = $("#magv").val()
+
+                console.log(subject)
+                $.ajax({
+                    url:'{% url 'get_teacher' %}',
+                    type:'POST',
+                    data:{subject:subject},
+                })
+
+                .done(function(response){
+                    var json_data = JSON.parse(response);
+                    if(json_data.length>0){
+                        var html_data = "";
+                        for (key in json_data)
+                        {
+                            html_data+="<option value='"+ json_data[key]["magv"]+"' ";
+                            if(json_data[key]["magv"] ==  magv){
+                                html_data+="selected"
+                            }
+                            html_data+=">"+ json_data[key]["ho_ten"]+ "</option>";
+                        }
+                        $("#teacher").html(html_data);
+                        $("#error_subject").html("");
+                        $("#error_subject").hide();
+                        //console.log(response)
+                    }else
+                    {
+                        $("#error_subject").html("Không có giáo viên nào dạy môn này cả.");
+                        $("#error_subject").show();
+                        $("#teacher").html(""); //Empty the Date Dropdown also
+                    }
+                })
+                .fail(function(){
+                    alert("Vui lòng chọn môn học hợp lệ.")
+                    $("#error_subject").html("");
+                });
+        })
+    </script>
+
+{%  endblock custom_js %}
