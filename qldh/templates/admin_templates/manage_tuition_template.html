@@ -1,182 +1,600 @@
 {% extends 'admin_templates/base_template.html' %}
 
 {% block page_title %}
-    Quản lý Giảng dạy
+    Quản lý Giảng dạy mới
 {% endblock page_title %}
 
 {% block main_content %}
-
-{% load static %}
-
-<section class="content">
+    {% load static %}
+    <section class="content">
         <div class="container-fluid">
-
-            <a class="btn btn-primary" href="{% url 'add_tuition' %}" role="button">+ Thêm giảng dạy</a> <br/>&nbsp;
-        <div class="card col-md-4">
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Năm học: </label>
-                    <select class="form-control" name="nam_hoc" id="nam_hoc">
-                      <option value="all">Tất cả</option>
-                        {% for nh in nam_hoc %}
-                            <option value="{{ nh.nam_hoc }}">{{ nh.mo_ta }}</option>
-                        {% endfor %}
-                    </select>
+            <div class="row">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="subject" id="subject">
+                            <option value="default">Chưa chọn</option>
+                            {% for m in mon %}
+                                <option value="{{ m.ma_mon }}">{{ m.ten_mon }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="subject">Môn:</label>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Học kỳ: </label>
-                    <select class="form-control" name="hoc_ky" id="hoc_ky">
-                      <option value="all">Tất cả</option>
-                        {% for hk in hoc_ky %}
-                            <option value="{{ hk }}">{{ hk }}</option>
-                        {% endfor %}
-                    </select>
+                {#                    <div class="form-group">#}
+                {#                        <div class="alert alert-danger" id="error_subject" style="display:none;">#}
+                {#                        </div>#}
+                {#                    </div>#}
+                <div class="col-md">
+                    <div class="form-floating">
+                        <select class="form-select" name="teacher" id="teacher">
+                        </select>
+                        <label for="teacher">Giáo viên:</label>
+                    </div>
+                    <br>
+                </div>
+                {#                <div class="col-md">#}
+                {#                    <button type="button" class="btn btn-primary" id="hien_thi" name="hien_thi">Hiển Thị</button>#}
+                {#                </div>#}
+            </div>
+            <div class="form-group">
+                <div class="col-12" id="message">
                 </div>
             </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-primary" id="hien_thi" name="hien_thi">Hiển Thị</button>
+            <div class="row">
+                <!-- Comfirm Modal -->
+                <div class="modal fade" id="confirmModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmModalLabel">Chọn lớp giảng dạy</h5>
+                                <button type="button" id="closeConfirmModal" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" id="them_moi_giang_day">
+                                    {% csrf_token %}
+                                    <div class="form-floating">
+                                        <select class="form-select" name="select-class" id="select-class">
+                                            <option value="default">Chưa chọn</option>
+                                            {% for lh in lop %}
+                                                <option value="{{ lh.ma_lop }}">{{ lh.ten_lop }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="subject">Chọn lớp giảng dạy:</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="close_confirmModal" class="btn btn-secondary btn-sm"
+                                        data-bs-dismiss="modal">Đóng
+                                </button>
+                                <button type="button" id="luu_giang_day" class="btn btn-primary btn-sm">
+                                    Lưu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="confirmModal2" aria-hidden="true" aria-labelledby="confirmModalLabel2"
+                     tabindex="-1"
+                     data-bs-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmModalLabel2">Xác nhận</h5>
+                            </div>
+                            <div class="modal-body">
+                                Lựa chọn sẽ bị mất, bạn có chắc muốn đóng
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="confirmclosed_confirm" class="btn btn-danger btn-sm">Xác nhận
+                                    đóng
+                                </button>
+                                <button class="btn btn-primary btn-sm" data-bs-target="#confirmModal"
+                                        data-bs-toggle="modal"
+                                        data-bs-dismiss="modal">
+                                    Hủy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit & Delete Modal -->
+                <div class="modal fade" id="edModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="edModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="edModalLabel">Chỉnh sửa giảng dạy</h5>
+                                <button type="button" id="closeEdModal" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" id="chinh_sua_giang_day" class="row align-items-center">
+                                    <div class="form-floating">
+                                        <select class="form-select" name="select-class-edit" id="select-class-edit">
+                                            {% for lh in lop %}
+                                                <option value="{{ lh.ma_lop }}">{{ lh.ten_lop }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="subject">Chọn lớp giảng dạy:</label>
+                                    </div>
+                                    &nbsp;
+                                </form>
+                                <div class="d-grid gap-2 align-items-center">
+                                    <button type="button" id="sua_giang_day" class="btn btn-primary btn-sm">Lưu chỉnh
+                                        sửa
+                                    </button>
+                                    <button type="button" id="xoa_giang_day" class="btn btn-danger btn-sm">Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="edModal2" aria-hidden="true" aria-labelledby="edModalLabel2"
+                 tabindex="-1" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="edModalLabel2">Xác nhận</h5>
+                        </div>
+                        <div class="modal-body">
+                            Lựa chọn sẽ bị mất, bạn có chắc muốn đóng
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="confirmclosed_ed" class="btn btn-danger btn-sm">Xác nhận
+                                đóng
+                            </button>
+                            <button class="btn btn-primary btn-sm" data-bs-target="#edModal"
+                                    data-bs-toggle="modal" data-bs-dismiss="modal">
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Chi tiết giảng dạy</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0" id="tuition_data">
+                        <table id="gd_table" class="table table-bordered text-center">
+                            <thead>
+                            <tr>
+                                <th>Tiết</th>
+                                <th>Thứ 2</th>
+                                <th>Thứ 3</th>
+                                <th>Thứ 4</th>
+                                <th>Thứ 5</th>
+                                <th>Thứ 6</th>
+                                <th>Thứ 7</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Tiết 1</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 2</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 3</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 4</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 5</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="7"><b>Nghỉ Trưa</b></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 6</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 7</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 8</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Tiết 9</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
             </div>
         </div>
-            {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
-                                
-
-            <div class="row">
-
-                <div class="col-md-12">
-                    <!-- general form elements -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Chi tiết giảng dạy</h3>
-
-                            <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                                <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body table-responsive p-0" id = "tuition_data">
-{#                            <table class="table table-hover text-nowrap">#}
-{#                            <thead>#}
-{#                                <tr>#}
-{#                                <th>STT</th>#}
-{#                                <th>Giáo Viên</th>#}
-{#                                <th>Môn</th>#}
-{#                                <th>Mã lớp</th>#}
-{#                                <th>Học kỳ</th>#}
-{#                                <th>Năm học</th>#}
-{#                                </tr>#}
-{#                            </thead>#}
-{#                            <tbody>#}
-{#                                {% for tt in Tuition %}#}
-{#                                <tr>#}
-{#                                <td>{{ forloop.counter }}</td>#}
-{#                                <td>{{ tt.magv.magv.last_name }} {{ tt.magv.magv.first_name }}</td>#}
-{#                                <td>{{ tt.magv.day_mon.ten_mon }}</td>#}
-{#                                <td>{{ tt.ma_lop.ten_lop }}</td>#}
-{#                                <td>{{ tt.hoc_ky }}</td>#}
-{#                                <td>{{ tt.nam_hoc.mo_ta }}</td>#}
-{#                                <td>#}
-{#                                    <a href="{% url 'manage_detail_tuition' tt.id %}" class="btn btn-info">Chi tiết</a>#}
-{#                                    <a href="{% url 'edit_tuition' tt.id %}" class="btn btn-success">Chỉnh sửa</a>#}
-{#                                    <a href="{% url 'delete_tuition' tt.id %}" class="btn btn-danger" onclick="return confirm('Bạn có thật sự muốn xóa?');">Xóa</a>#}
-{#                                </td>#}
-{#                                </tr>#}
-{#                                {% endfor %}#}
-{#                                #}
-{#                            </tbody>#}
-{#                            </table>#}
-                        </div>
-                        <!-- /.card-body -->
-                        </div>
-                    <!-- /.card -->
-
-                </div>
-            </div>
-
         </div><!-- /.container-fluid -->
-      </section>
+    </section>
 
-  {% endblock main_content %}
+{% endblock main_content %}
 
 {% block custom_js %}
     <script>
-        $(document).ready(function(){
+        //id cho tạo mới và chỉnh sửa
+        let id_cr;
+        let id_ed;
+        //ẩn div thông báo
+        $('#message').hide();
+        //thêm các button Trống cho table
+        function addButton() {
+            var table = document.getElementById('gd_table');
+            for (let i = 1; i <= 5; i++) {
+                for (let j = 1; j <= 6; j++) {
+                    table.rows[i].cells[j].innerHTML = '<button type="button" id="' + i + '' + (j + 1) + '" value="create" class="btn btn-secondary btn-sm button" data-bs-toggle="modal" data-bs-target="#confirmModal"> Trống </button>'
+                }
+            }
 
+            for (let i = 7; i <= 10; i++) {
+                for (let j = 1; j <= 6; j++) {
+                    table.rows[i].cells[j].innerHTML = '<button type="button" id="' + (i - 1) + '' + (j + 1) + '" value="create" class="btn btn-secondary btn-sm button" data-bs-toggle="modal" data-bs-target="#confirmModal"> Trống </button>'
+                }
+            }
+        }
 
-            $("#hien_thi").click(function () {
-                var nam_hoc = $("#nam_hoc").val()
-                var hoc_ky = $("#hoc_ky").val()
-                var i =1;
+        //sự kiện cho đóng modal tạo mới
+        function closeModal() {
+            $('#confirmModal2').modal('show');
+            $('#confirmclosed_confirm').click(function () {
+                $('#confirmModal2').modal('hide');
+                $('#confirmModal').modal('hide');
+                $('#confirmModal form')[0].reset();
+            });
+        }
+        $('#closeConfirmModal').click(function () {
+            closeModal();
+        });
+        $('#close_confirmModal').click(function () {
+            closeModal();
+        });
 
-                //console.log(nam_hoc)
-                //console.log(hoc_ky)
-                $.ajax({
-                    url:'{% url 'admin_get_tuition' %}',
-                    type:'POST',
-                    data:{nam_hoc:nam_hoc, hoc_ky:hoc_ky},
-                })
+        //sự kiện cho đóng modal chỉnh sửa và xóa
+        function closeEdModal() {
+            $('#edModal2').modal('show');
+            $('#confirmclosed_ed').click(function () {
+                $('#edModal2').modal('hide');
+                $('#edModal').modal('hide');
+                $('#edModal form')[0].reset();
+            });
+        }
+        $('#closeEdModal').click(function () {
+            closeEdModal();
+        });
 
-                .done(function(response){
+        //lấy môn học cho select
+        $("#subject").change(function () {
+            let subject = $("#subject").val()
+            $.ajax({
+                url: '{% url 'get_teacher' %}',
+                type: 'POST',
+                data: {subject: subject},
+            })
+                .done(function (response) {
                     var json_data = JSON.parse(response);
-                    if(json_data.length>0){
-                        var html_data = "<table class='table table-hover text-nowrap'> <thead> <tr> <th>STT</th> <th>Giáo viên</th> <th>Môn</th> <th>Mã lớp</th> <th>Học kỳ</th> <th>Năm học</th> </tr> </thead> <tbody>";
-                        for (key in json_data)
-                        {
-                            html_data+=" <tr>";
-                            html_data+="<td>"+ i +"</td>";
-                            html_data+="<td>"+ json_data[key]["giao_vien"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["mon"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["lop"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["hoc_ky"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["nam_hoc"] +"</td>";
-                            html_data+="<td><a href='/qldh/chi_tiet_giang_day/"+json_data[key]["id"]+"/' class='btn btn-info'>Chi tiết</a> ";
-                            html_data+="<a href='/qldh/chinh_sua_giang_day/"+ json_data[key]["id"] +"/' class='btn btn-success'>Chỉnh sửa</a> ";
-                            html_data+="<a href='/qldh/xoa_giang_day/"+json_data[key]["id"]+"/' class='btn btn-danger' onclick='return confirm("+"&quot;Press a button!&quot;"+");'>Xóa</a></td>";
-                            html_data+="</tr>";
-                            i++;
+                    if (json_data.length > 0) {
+                        var html_data = "";
+                        for (key in json_data) {
+                            html_data += "<option value='" + json_data[key]["magv"] + "'>" + json_data[key]["ho_ten"] + "</option>"
                         }
-                        html_data+=" </tbody> </table>";
-                        $("#tuition_data").html(html_data);
-                        //console.log(response)
-                    }else
-                    {
-                        $("#tuition_data").html("<h5 class='card-text text-center text-red'>Năm học và học kỳ này chưa xếp giảng dạy.</h5>");
+                        $("#teacher").html(html_data);
+                    } else {
+                        $("#teacher").html(""); //Empty the Date Dropdown also
                     }
                 })
-                .fail(function(){
-                    alert("Vui lòng chọn năm học và học kỳ hợp lệ.")
-                    $("#tuition_data").html("");
+                .fail(function () {
+                    alert("Vui lòng chọn môn học hợp lệ.")
                 });
-            })
-        })
+        });
 
+        //sự kiện cho button sửa giảng dạy
+        $("#sua_giang_day").click(function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            let ma_lop = $("#select-class-edit").val()
+            $.ajax({
+                type: "POST",
+                url: "{% url 'chinh_sua_lop_giang_day_ajax' %}",
+                data: {
+                    id: id_ed,
+                    ma_lop: ma_lop,
+                },
+                datatype: 'json',
+                success: function (response) {
+                    let mess = '<div id="message" class="alert alert-success alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["success"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#edModal').modal('hide');
+                    $('#edModal form')[0].reset();
+                    addButton();
+                    get_giang_day();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                },
+                error: function (response) {
+                    let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["responseJSON"]["error"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#edModal').modal('hide');
+                    $('#edModal form')[0].reset();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                }
+            });
+        });
+
+        //sự kiện cho button xóa giảng dạy
+        $("#xoa_giang_day").click(function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $.ajax({
+                type: "POST",
+                url: "{% url 'xoa_giang_day_ajax' %}",
+                data: {
+                    id: id_ed
+                },
+                datatype: 'json',
+                success: function (response) {
+                    let mess = '<div id="message" class="alert alert-success alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["success"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#edModal').modal('hide');
+                    $('#edModal form')[0].reset();
+                    addButton();
+                    get_giang_day();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                },
+                error: function (response) {
+                    let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["responseJSON"]["error"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#edModal').modal('hide');
+                    $('#edModal form')[0].reset();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                }
+            });
+        });
+
+        //sự kiện lấy danh sách giáo viên theo môn cho select và lấy dữ liệu giảng dạy cho giáo viên
+        function get_giang_day() {
+            let teacher = $("#teacher").val()
+            $.ajax({
+                url: '{% url 'get_tuition' %}',
+                type: 'POST',
+                data: {teacher: teacher},
+                success: function (response) {
+                    var json_data = JSON.parse(response);
+                    var table = document.getElementById('gd_table');
+                    for (key in json_data) {
+                        if (json_data[key]["1"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[1].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+
+                        if (json_data[key]["2"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[2].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["3"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[3].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["4"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[4].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["5"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[5].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["6"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[6].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["7"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[7].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["8"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[8].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["9"] == true) {
+                            let html_data = '<button type="button" id="' + json_data[key]["id"] + '" class="btn btn-primary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#edModal">'
+                            html_data += json_data[key]["ma_lop"] + '</button>'
+                            table.rows[9].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                    }
+
+                    $('.button-ed').click(function (e) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        let txt = this.textContent || this.innerText;
+                        id_ed = this.id;
+
+                        $("#select-class-edit option").filter(function () {
+                            return this.text == txt;
+                        }).prop('selected', true);
+                    })
+                },
+                error: function (response) {
+                    let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">Không tải được lịch giảng dạy'
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                }
+            })
+        }
+
+        //sự kiện cho thêm mới giảng dạy
+        $("#luu_giang_day").click(function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            let teacher_cr = $("#teacher").val()
+            let ma_lop_cr = $("#select-class").val()
+            $.ajax({
+                type: "POST",
+                url: "{% url 'them_moi_giang_day_ajax' %}",
+                data: {
+                    teacher: teacher_cr,
+                    ma_lop: ma_lop_cr,
+                    thu: id_cr[1],
+                    tiet: id_cr[0],
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                datatype: 'json',
+                success: function (response) {
+                    let mess = '<div id="message" class="alert alert-success alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["success"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#confirmModal').modal('hide');
+                    $('#confirmModal form')[0].reset();
+                    //addButton();
+                    get_giang_day();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                },
+                error: function (response) {
+                    let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["responseJSON"]["error"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#confirmModal').modal('hide');
+                    $('#confirmModal form')[0].reset();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                }
+            });
+        });
+
+        //sự kiện khi giá trị select #teacher thay đổi
+        $("#teacher").change(function () {
+            addButton();
+            get_giang_day();
+
+            $('.button').click(function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                id_cr = this.id;
+            });
+        });
     </script>
 
-{%  endblock custom_js %}
+{% endblock custom_js %}

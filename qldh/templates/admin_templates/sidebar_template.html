@@ -38,8 +38,7 @@
 
               <li class="nav-item">
               {% url 'manage_teacher' as manage_teacher %}
-              {% url 'edit_teacher' as view_detail_tuition %}
-              <a href="{{ manage_teacher }}" class="nav-link {% if request.path == manage_teacher %} active {% endif %} {% if request.path == edit_teacher %} active {% endif %}">
+              <a href="{{ manage_teacher }}" class="nav-link {% if request.path == manage_teacher %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
                   Giáo viên
@@ -49,8 +48,7 @@
 
             <li class="nav-item">
               {% url 'manage_study_room' as manage_study_room %}
-              {% url 'edit_study_room' as edit_study_room %}
-              <a href="{{ manage_study_room }}" class="nav-link {% if request.path == manage_study_room %} active {% endif %} {% if request.path == edit_study_room %} active {% endif %}">
+              <a href="{{ manage_study_room }}" class="nav-link {% if request.path == manage_study_room %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard"></i>
                 <p>
                   Phòng học
@@ -60,8 +58,7 @@
 
             <li class="nav-item">
               {% url 'manage_classroom' as manage_classroom %}
-              {% url 'edit_classroom' as edit_classroom %}
-              <a href="{{ manage_classroom }}" class="nav-link {% if request.path == manage_classroom %} active {% endif %} {% if request.path == edit_classroom %} active {% endif %}">
+              <a href="{{ manage_classroom }}" class="nav-link {% if request.path == manage_classroom %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
                   Lớp học
@@ -71,8 +68,7 @@
 
             <li class="nav-item">
               {% url 'manage_student' as manage_student %}
-              {% url 'edit_student' as edit_student %}
-              <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %}">
+              <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %}">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
                   Học sinh
@@ -82,8 +78,7 @@
 
             <li class="nav-item">
               {% url 'manage_tuition' as manage_tuition %}
-              {% url 'edit_tuition' as edit_tuitiont %}
-              <a href="{{ manage_tuition }}" class="nav-link {% if request.path == manage_tuition %} active {% endif %} {% if request.path == edit_tuition %} active {% endif %}">
+              <a href="{{ manage_tuition }}" class="nav-link {% if request.path == manage_tuition %} active {% endif %}">
                 <i class="nav-icon fas fa-calendar"></i>
                 <p>
                   Giảng dạy
@@ -91,31 +86,9 @@
               </a>
             </li>
 
-          <li class="nav-item">
-              {% url 'manage_tuition_new' as manage_tuition %}
-              {% url 'edit_tuition' as edit_tuitiont %}
-              <a href="{{ manage_tuition }}" class="nav-link {% if request.path == manage_tuition %} active {% endif %} {% if request.path == edit_tuition %} active {% endif %}">
-                <i class="nav-icon fas fa-calendar"></i>
-                <p>
-                  Giảng dạy mới
-                </p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              {% url 'add_tuition' as add_tuition %}
-              <a href="{{ add_tuition }}" class="nav-link {% if request.path == add_tuition %} active {% endif %}">
-                <i class="nav-icon fas fa-calendar-plus"></i>
-                <p>
-                  Thêm mới giảng dạy
-                </p>
-              </a>
-            </li>
-
             <li class="nav-item">
               {% url 'manage_subject' as manage_subject %}
-              {% url 'edit_subject' as edit_subject %}
-              <a href="{{ manage_subject }}" class="nav-link {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %}">
+              <a href="{{ manage_subject }}" class="nav-link {% if request.path == manage_subject %} active {% endif %}">
                 <i class="nav-icon fas fa-book"></i>
                 <p>
                   Môn học

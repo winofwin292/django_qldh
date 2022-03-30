@@ -41,21 +41,13 @@ urlpatterns = [
     path('xoa_hoc_sinh/<mahs>/', AdminView.delete_student, name="delete_student"),
 
     path('get_teacher/', AdminView.get_teacher, name="get_teacher"),
-    path('quan_ly_giang_day/', AdminView.manage_tuition, name="manage_tuition"),
 
-    path('quan_ly_giang_day_moi/', AdminView.manage_tuition_new, name="manage_tuition_new"),
+    path('quan_ly_giang_day/', AdminView.manage_tuition, name="manage_tuition"),
     path('them_moi_giang_day_ajax/', AdminView.them_moi_giang_day, name="them_moi_giang_day_ajax"),
     path('chinh_sua_lop_giang_day_ajax/', AdminView.chinh_sua_lop_giang_day, name="chinh_sua_lop_giang_day_ajax"),
     path('xoa_giang_day_ajax/', AdminView.xoa_giang_day, name="xoa_giang_day_ajax"),
 
-    path('them_moi_giang_day/', AdminView.add_tuition, name="add_tuition"),
-    path('luu_them_moi_giang_day/', AdminView.add_tuition_save, name="add_tuition_save"),
-    path('chinh_sua_giang_day/<tuition_id>/', AdminView.edit_tuition, name="edit_tuition"),
-    path('luu_chinh_sua_giang_day/', AdminView.edit_tuition_save, name="edit_tuition_save"),
-    path('xoa_giang_day/<tuition_id>/', AdminView.delete_tuition, name="delete_tuition"),
-
-    path('admin_get_tuition/', AdminView.admin_get_tuition, name="admin_get_tuition"),
-    path('admin_get_tuition_new/', AdminView.get_tuition_new, name="get_tuition_new"),
+    path('admin_get_tuition_new/', AdminView.get_tuition, name="get_tuition"),
     path('quan_ly_mon_hoc/', AdminView.manage_subject, name="manage_subject"),
     path('kiem_tra_ma_mon/', AdminView.kiem_tra_ma_mon, name="kiem_tra_ma_mon"),
     path('kiem_tra_ten_mon/', AdminView.kiem_tra_ten_mon, name="kiem_tra_ten_mon"),

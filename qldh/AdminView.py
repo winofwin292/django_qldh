@@ -743,7 +743,7 @@ def get_teacher(request):
 
 
 @csrf_exempt
-def get_tuition_new(request):
+def get_tuition(request):
     if request.accepts("application/json") and request.method == "POST":
         giao_vien = request.POST.get('teacher')
         try:
@@ -841,140 +841,13 @@ def xoa_giang_day(request):
 
 
 def manage_tuition(request):
-    tuitions = GiangDay.objects.all()
-    list_hk = ["Học Kỳ I", "Học Kỳ II"]
-    nam_hoc = NamHoc.objects.all()
+    mon = MonHoc.objects.all()
+    lop = LopHoc.objects.all()
     context = {
-        "Tuition": tuitions,
-        "hoc_ky": list_hk,
-        "nam_hoc": nam_hoc,
+        "mon": mon,
+        "lop": lop,
     }
     return render(request, 'admin_templates/manage_tuition_template.html', context)
-
-
-def manage_tuition_new(request):
-    mon = MonHoc.objects.all()
-    lop = LopHoc.objects.all()
-    context = {
-        "mon": mon,
-        "lop": lop,
-    }
-    return render(request, 'admin_templates/manage_tuition_template_new.html', context)
-
-
-@csrf_exempt
-def admin_get_tuition(request):
-    if request.accepts("application/json") and request.method == "POST":
-        nam_hoc = request.POST.get('nam_hoc')
-        hoc_ky = request.POST.get('hoc_ky')
-        try:
-            if nam_hoc == 'all' and hoc_ky == 'all':
-                tuition = GiangDay.objects.all()
-            elif nam_hoc == 'all':
-                tuition = GiangDay.objects.filter(hoc_ky=hoc_ky)
-            elif hoc_ky == 'all':
-                nh = NamHoc.objects.get(nam_hoc=nam_hoc)
-                tuition = GiangDay.objects.filter(nam_hoc=nh)
-            else:
-                nh = NamHoc.objects.get(nam_hoc=nam_hoc)
-                tuition = GiangDay.objects.filter(nam_hoc=nh, hoc_ky=hoc_ky)
-            list_data = []
-            for gd in tuition:
-                small_data = {"id": gd.id, "giao_vien": gd.magv.magv.last_name + " " + gd.magv.magv.first_name,
-                              "mon": gd.magv.day_mon.ten_mon, "lop": gd.ma_lop.ten_lop, "hoc_ky": gd.hoc_ky,
-                              "nam_hoc": gd.nam_hoc.mo_ta}
-                list_data.append(small_data)
-            # print(list_data)
-            return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
-        except:
-            return JsonResponse({"error": ""}, status=400)
-    return JsonResponse({"error": ""}, status=400)
-
-
-def add_tuition(request):
-    mon = MonHoc.objects.all()
-    lop = LopHoc.objects.all()
-    nam_hoc = NamHoc.objects.all()
-    list_hk = ["Học Kỳ I", "Học Kỳ II"]
-    context = {
-        "mon": mon,
-        "lop": lop,
-        "nam_hoc": nam_hoc,
-        "hoc_ky": list_hk,
-    }
-    return render(request, 'admin_templates/add_tuition_template.html', context)
-
-
-def add_tuition_save(request):
-    if request.method != "POST":
-        messages.error(request, "Lỗi phương thức")
-        return redirect('add_tuition')
-    else:
-        magv = request.POST.get('teacher')
-        lop = request.POST.get('lop_hoc')
-        nam = request.POST.get('nam_hoc')
-        hoc_ky = request.POST.get('hoc_ky')
-        try:
-            giang_day = GiangDay.objects.create(magv_id=magv, ma_lop_id=lop, nam_hoc_id=nam, hoc_ky=hoc_ky)
-            giang_day.save()
-            messages.success(request, "Thêm giảng dạy thành công!")
-            return redirect('add_tuition')
-        except:
-            messages.error(request, "Lỗi khi thêm giảng dạy!")
-            return redirect('add_tuition')
-
-
-def edit_tuition(request, tuition_id):
-    mon = MonHoc.objects.all()
-    lop = LopHoc.objects.all()
-    nam_hoc = NamHoc.objects.all()
-    tuition = GiangDay.objects.get(id=tuition_id)
-    list_hk = ["Học Kỳ I", "Học Kỳ II"]
-    context = {
-        "mon": mon,
-        "lop": lop,
-        "nam_hoc": nam_hoc,
-        "tuition": tuition,
-        "hoc_ky": list_hk,
-    }
-    return render(request, 'admin_templates/edit_tuition_template.html', context)
-
-
-def edit_tuition_save(request):
-    if request.method != "POST":
-        HttpResponse("Lỗi phương thức")
-    else:
-        magv = request.POST.get('teacher')
-        lop = request.POST.get('lop_hoc')
-        nam = request.POST.get('nam_hoc')
-        id = request.POST.get('tuition_id')
-        hoc_ky = request.POST.get('hoc_ky')
-        try:
-            giang_day = GiangDay.objects.get(id=id)
-            gv = GiaoVien.objects.get(magv=magv)
-            giang_day.magv_id = gv
-            lh = LopHoc.objects.get(ma_lop=lop)
-            giang_day.ma_lop_id = lh
-            nh = NamHoc.objects.get(nam_hoc=nam)
-            giang_day.nam_hoc_id = nh
-            giang_day.hoc_ky = hoc_ky
-            giang_day.save()
-            messages.success(request, "Chỉnh sửa giảng dạy thành công!")
-            return redirect('/qldh/chinh_sua_giang_day/' + id)
-        except:
-            messages.error(request, "Lỗi khi sửa giảng dạy!")
-            return redirect('/qldh/chinh_sua_giang_day/' + id)
-
-
-def delete_tuition(request, tuition_id):
-    gd = GiangDay.objects.get(id=tuition_id)
-    try:
-        gd.delete()
-        messages.success(request, "Xóa giảng dạy thành công!")
-        return redirect('manage_tuition')
-    except:
-        messages.error(request, "Xóa không thành công!!")
-        return redirect('manage_tuition')
 
 
 def manage_subject(request):
