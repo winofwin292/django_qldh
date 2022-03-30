@@ -807,6 +807,39 @@ def them_moi_giang_day(request):
     return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
 
 
+@csrf_exempt
+def chinh_sua_lop_giang_day(request):
+    if request.accepts("application/json") and request.method == "POST":
+        try:
+            id = request.POST.get('id')
+            ma_lop = request.POST.get('ma_lop')
+            lop = LopHoc.objects.get(ma_lop=ma_lop)
+
+            giang_day = GiangDay.objects.get(id=id)
+            giang_day.ma_lop = lop
+            giang_day.save()
+            return JsonResponse({"success": "Chỉnh sửa thành công"}, content_type="application/json", safe=False)
+        except Exception:
+            traceback.print_exc()
+            return JsonResponse({"error": "Lỗi: Chỉnh sửa không thành công"}, status=400)
+    return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
+
+
+@csrf_exempt
+def xoa_giang_day(request):
+    if request.accepts("application/json") and request.method == "POST":
+        try:
+            id = request.POST.get('id')
+
+            giang_day = GiangDay.objects.get(id=id)
+            giang_day.delete()
+            return JsonResponse({"success": "Xóa thành công"}, content_type="application/json", safe=False)
+        except Exception:
+            traceback.print_exc()
+            return JsonResponse({"error": "Lỗi: Xóa không thành công"}, status=400)
+    return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
+
+
 def manage_tuition(request):
     tuitions = GiangDay.objects.all()
     list_hk = ["Học Kỳ I", "Học Kỳ II"]
@@ -845,7 +878,6 @@ def admin_get_tuition(request):
             else:
                 nh = NamHoc.objects.get(nam_hoc=nam_hoc)
                 tuition = GiangDay.objects.filter(nam_hoc=nh, hoc_ky=hoc_ky)
-            # print(hoc_sinh)
             list_data = []
             for gd in tuition:
                 small_data = {"id": gd.id, "giao_vien": gd.magv.magv.last_name + " " + gd.magv.magv.first_name,

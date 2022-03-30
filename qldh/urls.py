@@ -10,7 +10,7 @@ urlpatterns = [
     path('check_email_exist/', AdminView.check_email_exist, name="check_email_exist"),
     path('check_username_exist/', AdminView.check_username_exist, name="check_username_exist"),
     path('download_excel/<file_name>', AdminView.download_excel, name="download_excel"),
-    
+
     path('quan_ly_giao_vien/', AdminView.manage_teacher, name="manage_teacher"),
     path('admin_get_teacher/', AdminView.admin_get_teacher, name="admin_get_teacher"),
     path('them_moi_giao_vien_xls/', AdminView.add_teacher_from_xls, name="add_teacher_from_xls"),
@@ -42,8 +42,12 @@ urlpatterns = [
 
     path('get_teacher/', AdminView.get_teacher, name="get_teacher"),
     path('quan_ly_giang_day/', AdminView.manage_tuition, name="manage_tuition"),
+
     path('quan_ly_giang_day_moi/', AdminView.manage_tuition_new, name="manage_tuition_new"),
     path('them_moi_giang_day_ajax/', AdminView.them_moi_giang_day, name="them_moi_giang_day_ajax"),
+    path('chinh_sua_lop_giang_day_ajax/', AdminView.chinh_sua_lop_giang_day, name="chinh_sua_lop_giang_day_ajax"),
+    path('xoa_giang_day_ajax/', AdminView.xoa_giang_day, name="xoa_giang_day_ajax"),
+
     path('them_moi_giang_day/', AdminView.add_tuition, name="add_tuition"),
     path('luu_them_moi_giang_day/', AdminView.add_tuition_save, name="add_tuition_save"),
     path('chinh_sua_giang_day/<tuition_id>/', AdminView.edit_tuition, name="edit_tuition"),
@@ -52,12 +56,6 @@ urlpatterns = [
 
     path('admin_get_tuition/', AdminView.admin_get_tuition, name="admin_get_tuition"),
     path('admin_get_tuition_new/', AdminView.get_tuition_new, name="get_tuition_new"),
-    # path('chi_tiet_giang_day/<tuition_id>/', AdminView.manage_detail_tuition, name="manage_detail_tuition"),
-    # path('them_moi_chi_tiet_giang_day/<tuition_id>/', AdminView.add_detail_tuition, name="add_detail_tuition"),
-    # path('luu_them_moi_chi_tiet_giang_day/<tuition_id>/', AdminView.add_detail_tuition_save, name="add_detail_tuition_save"),
-    # path('chinh_sua_chi_tiet_giang_day/<tuition_id>/<detail_id>/', AdminView.edit_detail_tuition, name="edit_detail_tuition"),
-    # path('luu_chinh_chi_tiet_sua_giang_day/<tuition_id>/<detail_id>/', AdminView.edit_detail_tuition_save, name="edit_detail_tuition_save"),
-    # path('xoa_chi_tiet_giang_day/<tuition_id>/<detail_id>/', AdminView.delete_detail_tuition, name="delete_detail_tuition"),
     path('quan_ly_mon_hoc/', AdminView.manage_subject, name="manage_subject"),
     path('kiem_tra_ma_mon/', AdminView.kiem_tra_ma_mon, name="kiem_tra_ma_mon"),
     path('kiem_tra_ten_mon/', AdminView.kiem_tra_ten_mon, name="kiem_tra_ten_mon"),
@@ -67,7 +65,6 @@ urlpatterns = [
     path('luu_chinh_sua_mon_hoc/<ma_mon>/', AdminView.edit_subject_save, name="edit_subject_save"),
     path('xoa_mon_hoc/<ma_mon>/', AdminView.delete_subject, name="delete_subject"),
 
-
     # URLS for GiaoVien
     path('teacher_get_tuition/', TeacherView.teacher_get_tuition, name="teacher_get_tuition"),
     path('teacher_home/', TeacherView.teacher_home, name="teacher_home"),
@@ -75,12 +72,15 @@ urlpatterns = [
     # path('xem_chi_tiet_giang_day/<tuition_id>/', TeacherView.view_detail_tuition, name="view_detail_tuition"),
     path('danh_sach_hoc_sinh_chu_nhiem/', TeacherView.view_student, name="view_student"),
     path('quan_ly_diem_so/<tuition_id>/<ma_lop>/', TeacherView.manage_mark, name="manage_mark"),
-    path('quan_ly_chi_tiet_diem_so/<tuition_id>/<ma_lop>/<mark_id>/', TeacherView.manage_detail_mark, name="manage_detail_mark"),
+    path('quan_ly_chi_tiet_diem_so/<tuition_id>/<ma_lop>/<mark_id>/', TeacherView.manage_detail_mark,
+         name="manage_detail_mark"),
     path('chinh_sua_diem_so/<tuition_id>/<ma_lop>/<mark_id>/', TeacherView.edit_mark, name="edit_mark"),
     path('luu_chinh_sua_diem_so/<tuition_id>/<ma_lop>/<mark_id>/', TeacherView.edit_mark_save, name="edit_mark_save"),
     path('danh_gia_hoc_sinh/', TeacherView.assessment_student, name="assessment_student"),
-    path('chinh_sua_danh_gia_hoc_sinh/<student_id>/', TeacherView.edit_assessment_student, name="edit_assessment_student"),
-    path('luu_danh_gia_hoc_sinh/<student_id>/<kqht_id>/', TeacherView.edit_assessment_student_save, name="edit_assessment_student_save"),
+    path('chinh_sua_danh_gia_hoc_sinh/<student_id>/', TeacherView.edit_assessment_student,
+         name="edit_assessment_student"),
+    path('luu_danh_gia_hoc_sinh/<student_id>/<kqht_id>/', TeacherView.edit_assessment_student_save,
+         name="edit_assessment_student_save"),
     path('thong_tin_ca_nhan/', TeacherView.profile_teacher, name="profile_teacher"),
     path('doi_mat_khau/', TeacherView.change_password, name="change_password"),
     path('luu_doi_mat_khau/', TeacherView.change_password_save, name="change_password_save"),
