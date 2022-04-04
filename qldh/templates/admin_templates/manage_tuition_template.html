@@ -534,8 +534,8 @@
 
         //sự kiện cho thêm mới giảng dạy
         $("#luu_giang_day").click(function (e) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
+            //e.stopImmediatePropagation();
+            console.log(id_cr)
             let teacher_cr = $("#teacher").val()
             let ma_lop_cr = $("#select-class").val()
             $.ajax({
@@ -590,7 +590,6 @@
             get_giang_day();
 
             $('.button').click(function (e) {
-                e.preventDefault();
                 e.stopImmediatePropagation();
                 id_cr = this.id;
             });

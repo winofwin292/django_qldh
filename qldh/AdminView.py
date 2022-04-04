@@ -8,6 +8,8 @@ from django.conf import settings
 import json
 import openpyxl
 import os
+from datetime import datetime, timedelta
+from .cal_setup import get_calendar_service
 
 from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, HocKy, GiaoVien, HocSinh, GiangDay
 from .forms import AddTeacherForm, EditTeacherForm, AddClassroomForm, EditClassroomForm, AddStudentForm, EditStudentForm
@@ -730,12 +732,10 @@ def get_teacher(request):
         try:
             subject_model = MonHoc.objects.get(ma_mon=ma_mon)
             giao_vien = GiaoVien.objects.filter(day_mon_id=subject_model)
-            # print(giao_vien)
             list_data = []
             for gv in giao_vien:
                 small_data = {"magv": gv.magv.username, "ho_ten": str(gv.magv.last_name + " " + gv.magv.first_name)}
                 list_data.append(small_data)
-            # print(list_data)
             return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
         except:
             return JsonResponse({"error": ""}, status=400)
@@ -780,26 +780,68 @@ def them_moi_giang_day(request):
                 return JsonResponse({"error": "Lỗi: số lượng tiết trên tuần quá giới hạn"}, status=400)
 
             gd = GiangDay.objects.create(magv=gv, ma_lop=lop, thu=thu, nam_hoc=nam_hoc, hoc_ky=hoc_ky)
+            hour_start = 0
+            minute_start = 0
             match tiet:
                 case '1':
                     gd.tiet_1 = True
+                    hour_start = 7
+                    minute_start = 0
                 case '2':
                     gd.tiet_2 = True
+                    hour_start = 7
+                    minute_start = 45
                 case '3':
                     gd.tiet_3 = True
+                    hour_start = 8
+                    minute_start = 50
                 case '4':
                     gd.tiet_4 = True
+                    hour_start = 9
+                    minute_start = 35
                 case '5':
                     gd.tiet_5 = True
+                    hour_start = 10
+                    minute_start = 30
                 case '6':
                     gd.tiet_6 = True
+                    hour_start = 13
+                    minute_start = 30
                 case '7':
                     gd.tiet_7 = True
+                    hour_start = 14
+                    minute_start = 15
                 case '8':
                     gd.tiet_8 = True
+                    hour_start = 15
+                    minute_start = 20
                 case '9':
                     gd.tiet_9 = True
+                    hour_start = 16
+                    minute_start = 10
             gd.save()
+
+            #Thêm mới sự kiện trên google cal
+            service = get_calendar_service()
+            now_datetime = datetime.now().date()
+            now_dateofweek = datetime.now().isoweekday()
+            start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day,
+                                  hour_start, minute_start) + timedelta(days=((int(thu)-1)-now_dateofweek))
+            end_time = start_time + timedelta(minutes=45)
+
+            event_result = service.events().insert(calendarId='primary',
+                                                   body={
+                                                       "summary": lop.ten_lop,
+                                                       "description": lop.ten_lop,
+                                                       "start": {"dateTime": start_time.isoformat(),
+                                                                 "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                       "end": {"dateTime": end_time.isoformat(),
+                                                               "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                       'recurrence': [
+                                                           'RRULE:FREQ=WEEKLY;COUNT=18'
+                                                       ],
+                                                   }
+                                                   ).execute()
             return JsonResponse({"success": "Thêm mới thành công"}, content_type="application/json", safe=False)
         except Exception:
             traceback.print_exc()
