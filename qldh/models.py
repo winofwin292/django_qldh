@@ -129,6 +129,7 @@ class GiangDay(models.Model):
     tiet_7 = models.BooleanField(default=False, blank=True)
     tiet_8 = models.BooleanField(default=False, blank=True)
     tiet_9 = models.BooleanField(default=False, blank=True)
+    cal_id = models.TextField(default="")
     objects = models.Manager()
 
     class Meta:
