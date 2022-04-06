@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Hệ thống quản lý dạy học | Giáo Viên</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% comment %} For Custom CSS {% endcomment %}
+
+    {% block custom_css %}
+    {% endblock custom_css %}
+
+</head>
+
+<div class="card-body table-responsive p-0" id="tuition_data">
+    <table id="gd_table" class="table table-bordered text-center">
+        <thead>
+        <tr>
+            <th>Tiết</th>
+            <th>Thứ 2</th>
+            <th>Thứ 3</th>
+            <th>Thứ 4</th>
+            <th>Thứ 5</th>
+            <th>Thứ 6</th>
+            <th>Thứ 7</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Tiết 1</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Tiết 2</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Tiết 3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Tiết 4</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Tiết 5</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="7"><b>Nghỉ Trưa</b></td>
+        </tr>
+        <tr>
+            <td>Tiết 6</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Tiết 7</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Tiết 8</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Tiết 9</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    var table = document.getElementById('gd_table');
+    for (let i = 1; i <= 5; i++) {
+        for (let j = 1; j <= 6; j++) {
+            table.rows[i].cells[j].innerHTML = 'Trống'
+        }
+    }
+
+    for (let i = 7; i <= 10; i++) {
+        for (let j = 1; j <= 6; j++) {
+            table.rows[i].cells[j].innerHTML = 'Trống'
+        }
+    }
+</script>
+
+</body>
+</html>

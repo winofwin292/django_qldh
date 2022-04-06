@@ -6,170 +6,222 @@
 
 {% block main_content %}
 
-{% load static %}
-
-<section class="content">
+    {% load static %}
+    <section class="content">
         <div class="container-fluid">
-            <div class="card col-md-4">
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Năm học: </label>
-                    <select class="form-control" name="nam_hoc" id="nam_hoc">
-                      <option value="all">Tất cả</option>
-                        {% for nh in nam_hoc %}
-                            <option value="{{ nh.nam_hoc }}">{{ nh.mo_ta }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Học kỳ: </label>
-                    <select class="form-control" name="hoc_ky" id="hoc_ky">
-                      <option value="all">Tất cả</option>
-                        {% for hk in hoc_ky %}
-                            <option value="{{ hk }}">{{ hk }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-primary" id="hien_thi" name="hien_thi">Hiển Thị</button>
-            </div>
-        </div>
-            {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
-                                
 
             <div class="row">
-
+                <div class="form-group">
+                    <div class="col-12" id="message">
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Danh sách giảng dạy</h3>
-
                             <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                                <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                <div class="input-group input-group-sm" style="width: 210px;">
+                                    Tải xuống lịch giảng dạy &nbsp;&nbsp;
+                                    <a type="button" href="{% url 'tkb_gv_pdf' %}" class="btn btn-default"><i
+                                            class="fa-solid fa-download"></i>
+                                    <a>
                                 </div>
-                            </div>
                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0" id="tuition_data">
-{#                            <table class="table table-hover text-nowrap">#}
-{#                            <thead>#}
-{#                                <tr>#}
-{#                                <th>STT</th>#}
-{#                                <th>Môn</th>#}
-{#                                <th>Mã lớp</th>#}
-{#                                <th>Học kỳ</th>#}
-{#                                <th>Năm học</th>#}
-{#                                </tr>#}
-{#                            </thead>#}
-{#                            <tbody>#}
-{#                                {% for gd in dsgd %}#}
-{#                                <tr>#}
-{#                                <td>{{ forloop.counter }}</td>#}
-{#                                <td>{{ gd.magv.day_mon.ten_mon }}</td>#}
-{#                                <td>{{ gd.ma_lop.ten_lop }}</td>#}
-{#                                <td>{{ gd.hoc_ky }}</td>#}
-{#                                <td>{{ gd.nam_hoc.mo_ta }}</td>#}
-{#                                <td>#}
-{#                                    <a href="{% url 'view_detail_tuition' gd.id %}" class="btn btn-info">Chi tiết</a>#}
-{#                                    <a href="{% url 'manage_mark' tuition_id=gd.id ma_lop=gd.ma_lop.ma_lop %}" class="btn btn-primary">Quản lý điểm số</a>#}
-{#                                </td>#}
-{#                                </tr>#}
-{#                                {% endfor %}#}
-{#                                #}
-{#                            </tbody>#}
-{#                            </table>#}
+                            <table id="gd_table" class="table table-bordered text-center">
+                                <thead>
+                                <tr>
+                                    <th>Tiết</th>
+                                    <th>Thứ 2</th>
+                                    <th>Thứ 3</th>
+                                    <th>Thứ 4</th>
+                                    <th>Thứ 5</th>
+                                    <th>Thứ 6</th>
+                                    <th>Thứ 7</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tiết 1</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 2</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 3</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 4</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 5</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"><b>Nghỉ Trưa</b></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 6</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 7</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 8</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 9</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <!-- /.card-body -->
-                        </div>
+                    </div>
                     <!-- /.card -->
-
                 </div>
             </div>
-
         </div><!-- /.container-fluid -->
-      </section>
+    </section>
 
-  {% endblock main_content %}
+{% endblock main_content %}
 
 {% block custom_js %}
     <script>
-        $(document).ready(function(){
+        function addButton() {
+            var table = document.getElementById('gd_table');
+            for (let i = 1; i <= 5; i++) {
+                for (let j = 1; j <= 6; j++) {
+                    table.rows[i].cells[j].innerHTML = 'Trống'
+                }
+            }
 
+            for (let i = 7; i <= 10; i++) {
+                for (let j = 1; j <= 6; j++) {
+                    table.rows[i].cells[j].innerHTML = 'Trống'
+                }
+            }
+        }
 
-            $("#hien_thi").click(function () {
-                var nam_hoc = $("#nam_hoc").val()
-                var hoc_ky = $("#hoc_ky").val()
-                var i =1;
-
-                //console.log(nam_hoc)
-                //console.log(hoc_ky)
-                $.ajax({
-                    url:'{% url 'teacher_get_tuition' %}',
-                    type:'POST',
-                    data:{nam_hoc:nam_hoc, hoc_ky:hoc_ky},
-                })
-
-                .done(function(response){
+        $(document).ready(function () {
+            addButton();
+            $.ajax({
+                url: '{% url 'teacher_get_tuition' %}',
+                type: 'POST',
+                success: function (response) {
                     var json_data = JSON.parse(response);
-                    if(json_data.length>0){
-                        var html_data = "<table class='table table-hover text-nowrap'> <thead> <tr> <th>STT</th> <th>Môn</th> <th>Mã lớp</th> <th>Học kỳ</th> <th>Năm học</th> </tr> </thead> <tbody>";
-                        for (key in json_data)
-                        {
-                            html_data+=" <tr>";
-                            html_data+="<td>"+ i +"</td>";
-                            html_data+="<td>"+ json_data[key]["mon"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["lop"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["hoc_ky"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["nam_hoc"] +"</td>";
-                            html_data+="<td><a href='/qldh/xem_chi_tiet_giang_day/"+json_data[key]["id"]+"/' class='btn btn-info'>Chi tiết</a> ";
-                            html_data+="<a href='/qldh/quan_ly_diem_so/"+ json_data[key]["id"] +"/" +json_data[key]["ma_lop"]+"/' class='btn btn-success'>Quản lý điểm số</a> ";
-                            html_data+="</tr>";
-                            i++;
+                    var table = document.getElementById('gd_table');
+                    for (key in json_data) {
+                        if (json_data[key]["1"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[1].cells[json_data[key]["thu"] - 1].innerHTML = html_data
                         }
-                        html_data+=" </tbody> </table>";
-                        $("#tuition_data").html(html_data);
-                        //console.log(response)
-                    }else
-                    {
-                        $("#tuition_data").html("<h5 class='card-text text-center text-red'>Năm học và học kỳ này chưa xếp giảng dạy.</h5>");
+
+                        if (json_data[key]["2"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[2].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["3"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[3].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["4"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[4].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["5"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[5].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["6"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[6].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["7"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[7].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["8"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[8].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["9"] == true) {
+                            let html_data = '<b>' + json_data[key]["ma_lop"] + '</b>'
+                            table.rows[9].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
                     }
-                })
-                .fail(function(){
-                    alert("Vui lòng chọn năm học và học kỳ hợp lệ.")
-                    $("#tuition_data").html("");
-                });
-            })
-        })
+                },
+                error: function (response) {
+                    let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">Không tải được lịch giảng dạy'
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                }
+            });
+        });
 
     </script>
 
-{%  endblock custom_js %}
+{% endblock custom_js %}

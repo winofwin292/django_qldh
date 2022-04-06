@@ -75,23 +75,23 @@
     <div class="content-wrapper">
 
     <!-- Content Header (Page header) -->
-      <div class="content-header">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0 text-dark">
-                {% block page_title %}
-                {% endblock page_title %}
-              </h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Trang chủ</a></li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
+{#      <div class="content-header">#}
+{#        <div class="container-fluid">#}
+{#          <div class="row mb-2">#}
+{#            <div class="col-sm-6">#}
+{#              <h1 class="m-0 text-dark">#}
+{#                {% block page_title %}#}
+{#                {% endblock page_title %}#}
+{#              </h1>#}
+{#            </div><!-- /.col -->#}
+{#            <div class="col-sm-6">#}
+{#              <ol class="breadcrumb float-sm-right">#}
+{#                <li class="breadcrumb-item"><a href="{% url 'teacher_home' %}">Trang chủ</a></li>#}
+{#              </ol>#}
+{#            </div><!-- /.col -->#}
+{#          </div><!-- /.row -->#}
+{#        </div><!-- /.container-fluid -->#}
+{#      </div>#}
       <!-- /.content-header -->
 
       <!-- Main content -->
@@ -129,8 +129,6 @@
 <!-- daterangepicker -->
 <script src="{% static "moment/moment.min.js"  %}"></script>
 <script src="{% static "daterangepicker/daterangepicker.js"  %}"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="{% static "tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"  %}"></script>
 <!-- Summernote -->
 <script src="{% static "summernote/summernote-bs4.min.js"  %}"></script>
 <!-- overlayScrollbars -->

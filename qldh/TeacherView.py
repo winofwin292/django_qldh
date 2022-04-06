@@ -1,11 +1,17 @@
+import traceback
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, DiemSo_ChiTiet, DiemSo, KetQuaHocTap
+from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, \
+    DiemSo_ChiTiet, DiemSo, KetQuaHocTap, HocKy
 from .forms import MarkForm
+import os
+from weasyprint import HTML
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
 
 
 def teacher_home(request):
@@ -28,54 +34,43 @@ def teacher_home(request):
 
 
 def view_tuition(request):
-    giang_day = GiangDay.objects.filter(magv=request.user.username)
-    list_hk = ["Học Kỳ I", "Học Kỳ II"]
-    nam_hoc = NamHoc.objects.all()
-    context = {
-        "dsgd": giang_day,
-        "hoc_ky": list_hk,
-        "nam_hoc": nam_hoc,
-    }
-    return render(request, 'teacher_templates/view_tuition_tempale.html', context)
+    return render(request, 'teacher_templates/view_tuition_tempale.html')
 
 
 @csrf_exempt
 def teacher_get_tuition(request):
     if request.accepts("application/json") and request.method == "POST":
-        nam_hoc = request.POST.get('nam_hoc')
-        hoc_ky = request.POST.get('hoc_ky')
+        nam_hoc = NamHoc.objects.get(hien_tai=True)
+        hoc_ky = HocKy.objects.get(hien_tai=True)
         try:
-            if nam_hoc == 'all' and hoc_ky == 'all':
-                tuition = GiangDay.objects.filter(magv=request.user.username)
-            elif nam_hoc == 'all':
-                tuition = GiangDay.objects.filter(magv=request.user.username, hoc_ky=hoc_ky)
-            elif hoc_ky == 'all':
-                nh = NamHoc.objects.get(nam_hoc=nam_hoc)
-                tuition = GiangDay.objects.filter(magv=request.user.username, nam_hoc=nh)
-            else:
-                nh = NamHoc.objects.get(nam_hoc=nam_hoc)
-                tuition = GiangDay.objects.filter(magv=request.user.username, nam_hoc=nh, hoc_ky=hoc_ky)
-            # print(hoc_sinh)
-            list_data = []
-            for gd in tuition:
-                small_data = {"id": gd.id,"ma_lop": gd.ma_lop.ma_lop, "mon":gd.magv.day_mon.ten_mon, "lop":gd.ma_lop.ten_lop, "hoc_ky": gd.hoc_ky, "nam_hoc":gd.nam_hoc.mo_ta}
-                list_data.append(small_data)
-            # print(list_data)
-            return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
-        except:
-            return JsonResponse({"error": ""}, status=400)
-    return JsonResponse({"error": ""}, status=400)
+            filter_gd = GiangDay.objects.filter(magv=request.user.username, nam_hoc=nam_hoc, hoc_ky=hoc_ky)
+            list_gd = []
+            for item in filter_gd:
+                small_data = {"id": item.id, "thu": item.thu, "ma_lop": item.ma_lop.ten_lop, "1": item.tiet_1,
+                              "2": item.tiet_2, "3": item.tiet_3, "4": item.tiet_4, "5": item.tiet_5, "6": item.tiet_6,
+                              "7": item.tiet_7, "8": item.tiet_8, "9": item.tiet_9}
+                list_gd.append(small_data)
+            return JsonResponse(json.dumps(list_gd), content_type="application/json", safe=False)
+        except Exception:
+            traceback.print_exc()
+            return JsonResponse({"error": "try"}, status=400)
+    return JsonResponse({"error": "if"}, status=400)
 
 
-# def view_detail_tuition(request, tuition_id):
-#     try:
-#         list_detail = GiangDay_ChiTiet.objects.filter(magd=tuition_id)
-#     except:
-#         list_detail = []
-#     context = {
-#         "gdct": list_detail,
-#     }
-#     return render(request, 'teacher_templates/view_detail_tuition_template.html', context)
+def tkb_gv_pdf(request):
+    dirname = os.path.dirname(__file__) + "\\tmp"
+    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
+    html_string = render_to_string('pdf_templates/tkb_gv_template.html', {'paragraphs': paragraphs})
+
+    html = HTML(string=html_string)
+    html.write_pdf(target=dirname + '\\test.pdf')
+
+    fs = FileSystemStorage(dirname)
+    with fs.open('test.pdf') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+    return response
 
 
 def view_student(request):
@@ -162,7 +157,7 @@ def edit_mark_save(request, tuition_id, ma_lop, mark_id):
                 dsct.diem_15_phut = diem_15_phut
                 dsct.diem_45_phut = diem_45_phut
                 dsct.diem_thi = diem_thi
-                dtb = (diem_mieng + diem_15_phut + diem_45_phut*2 + diem_thi*3)/7
+                dtb = (diem_mieng + diem_15_phut + diem_45_phut * 2 + diem_thi * 3) / 7
                 # print(type(dtb))
                 # print(dtb)
                 ds.diem = round(dtb, 2)
@@ -211,7 +206,7 @@ def edit_assessment_student(request, student_id):
     tong_diem = 0.0
     for d in ds:
         tong_diem += d.diem
-    diem_tb = round(tong_diem/(ds.count()), 2)
+    diem_tb = round(tong_diem / (ds.count()), 2)
     # print(diem_tb)
     context = {
         "hs": hs,
