@@ -14,4 +14,4 @@ pip-selfcheck.json
 db.sqlite3
 qldh/credentials.json
 token.pickle
-
+qldh/tmp/*
