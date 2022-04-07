@@ -1,23 +1,48 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title>Hệ thống quản lý dạy học | Giáo Viên</title>
     <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body {
+            width: 100%;
+        }
 
-    {% comment %} For Custom CSS {% endcomment %}
+        table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
 
-    {% block custom_css %}
-    {% endblock custom_css %}
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }
 
+        .nghi_trua {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            width: 100%;
+        }
+    </style>
 </head>
-
-<div class="card-body table-responsive p-0" id="tuition_data">
-    <table id="gd_table" class="table table-bordered text-center">
+<body>
+<div>
+    <div>
+        <h2>Thời khóa biểu cá nhân</h2>
+        <h5>Họ tên: {{ giaovien }}</h5>
+        <h5>Năm học: {{ namhoc }}</h5>
+        <h5>Học kỳ: {{ hocky }}</h5>
+    </div>
+    <table>
         <thead>
         <tr>
             <th>Tiết</th>
@@ -30,107 +55,30 @@
         </tr>
         </thead>
         <tbody>
+        {% for items in lst_sang %}
+            <tr>
+            <td>Tiết {{ forloop.counter }}</td>
+            {% for item in items %}
+                <td>{{ item }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
         <tr>
-            <td>Tiết 1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="7" class="nghi_trua"><b>Nghỉ Trưa</b></td>
         </tr>
-        <tr>
-            <td>Tiết 2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Tiết 3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Tiết 4</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Tiết 5</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td colspan="7"><b>Nghỉ Trưa</b></td>
-        </tr>
-        <tr>
-            <td>Tiết 6</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Tiết 7</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Tiết 8</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Tiết 9</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+        {% for items in lst_chieu %}
+            <tr>
+            <td>Tiết {{ forloop.counter|add:"5" }}</td>
+            {% for item in items %}
+                <td>{{ item }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>
-<script>
-    var table = document.getElementById('gd_table');
-    for (let i = 1; i <= 5; i++) {
-        for (let j = 1; j <= 6; j++) {
-            table.rows[i].cells[j].innerHTML = 'Trống'
-        }
-    }
-
-    for (let i = 7; i <= 10; i++) {
-        for (let j = 1; j <= 6; j++) {
-            table.rows[i].cells[j].innerHTML = 'Trống'
-        }
-    }
-</script>
-
+<div>
+    <p>Ngày in: {% now 'd/m/Y H:m:s' %}</p>
+</div>
 </body>
 </html>

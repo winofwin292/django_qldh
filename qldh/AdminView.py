@@ -162,15 +162,6 @@ def add_teacher_save(request):
             gioi_tinh = form.cleaned_data['gioi_tinh']
             trinh_do = form.cleaned_data['trinh_do']
             day_mon = form.cleaned_data['day_mon']
-
-            # if len(request.FILES) != 0:
-            #     profile_pic = request.FILES['profile_pic']
-            #     fs = FileSystemStorage()
-            #     filename = fs.save(profile_pic.name, profile_pic)
-            #     profile_pic_url = fs.url(filename)
-            # else:
-            #     profile_pic_url = None
-
             try:
                 user = CustomUser.objects.create_user(username=auto_ids(GiaoVien, 'GV', column_id='magv_id'),
                                                       password=auto_ids(GiaoVien, 'GV', column_id='magv_id'),
@@ -212,7 +203,6 @@ def edit_teacher(request, magv):
     form.fields['gioi_tinh'].initial = gv.gioi_tinh
     form.fields['day_mon'].initial = gv.day_mon.ma_mon
     form.fields['trinh_do'].initial = gv.trinh_do.trinh_do
-    # form.fields['profile_pic'].initial = gv.profile_pic
 
     context = {
         "magv": magv,
@@ -838,9 +828,9 @@ def them_moi_giang_day(request):
                                                        'recurrence': [
                                                            'RRULE:FREQ=WEEKLY;COUNT=18'
                                                        ],
-                                                       'attendees': [
-                                                           {'email': 'winofwin292@gmail.com'},
-                                                       ],
+                                                       # 'attendees': [
+                                                       #     {'email': 'winofwin292@gmail.com'},
+                                                       # ],
                                                    }
                                                    ).execute()
             gd.cal_id = event_result['id']

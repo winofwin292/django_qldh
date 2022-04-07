@@ -59,16 +59,53 @@ def teacher_get_tuition(request):
 
 def tkb_gv_pdf(request):
     dirname = os.path.dirname(__file__) + "\\tmp"
-    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
-    html_string = render_to_string('pdf_templates/tkb_gv_template.html', {'paragraphs': paragraphs})
+    # data
+    nam_hoc = NamHoc.objects.get(hien_tai=True)
+    hoc_ky = HocKy.objects.get(hien_tai=True)
+    giao_vien = GiaoVien.objects.get(magv=request.user.username)
+    giang_day = GiangDay.objects.filter(magv=giao_vien, nam_hoc=nam_hoc, hoc_ky=hoc_ky)
+    lst_sang = [['Trống' for j in range(6)] for i in range(5)]
+    lst_chieu = [['Trống' for j in range(6)] for i in range(4)]
+
+    for gd in giang_day:
+        if gd.tiet_1 is True:
+            lst_sang[0][gd.thu - 2] = gd.ma_lop.ten_lop
+        if gd.tiet_2 is True:
+            lst_sang[1][gd.thu - 2] = gd.ma_lop.ten_lop
+        if gd.tiet_3 is True:
+            lst_sang[2][gd.thu - 2] = gd.ma_lop.ten_lop
+        if gd.tiet_4 is True:
+            lst_sang[3][gd.thu - 2] = gd.ma_lop.ten_lop
+        if gd.tiet_5 is True:
+            lst_sang[4][gd.thu - 2] = gd.ma_lop.ten_lop
+
+        if gd.tiet_6 is True:
+            lst_chieu[0][gd.thu - 2] = gd.ma_lop.ten_lop
+        if gd.tiet_7 is True:
+            lst_chieu[1][gd.thu - 2] = gd.ma_lop.ten_lop
+        if gd.tiet_8 is True:
+            lst_chieu[2][gd.thu - 2] = gd.ma_lop.ten_lop
+        if gd.tiet_9 is True:
+            lst_chieu[3][gd.thu - 2] = gd.ma_lop.ten_lop
+
+    context = {
+        'namhoc': nam_hoc.mo_ta,
+        'hocky': hoc_ky.hoc_ky,
+        'giaovien': giao_vien.magv.last_name + ' ' + giao_vien.magv.first_name,
+        'lst_sang': lst_sang,
+        'lst_chieu': lst_chieu,
+    }
+    html_string = render_to_string('pdf_templates/tkb_gv_template.html', context)
+
+    file_name =nam_hoc.nam_hoc + '-' + hoc_ky.hoc_ky + '-' + giao_vien.magv.username + '.pdf'
 
     html = HTML(string=html_string)
-    html.write_pdf(target=dirname + '\\test.pdf')
+    html.write_pdf(target=dirname + '\\' + file_name)
 
     fs = FileSystemStorage(dirname)
-    with fs.open('test.pdf') as pdf:
+    with fs.open(file_name) as pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="' + file_name + '"'
         return response
     return response
 
