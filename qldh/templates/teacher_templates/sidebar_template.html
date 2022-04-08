@@ -1,96 +1,114 @@
 {% load static %}
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-      <!-- Brand Logo -->
-      <a href="{% url 'teacher_home' %}" class="brand-link">
-        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-            style="opacity: .8">
+    <!-- Brand Logo -->
+    <a href="{% url 'teacher_home' %}" class="brand-link">
+        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo"
+             class="brand-image img-circle elevation-3"
+             style="opacity: .8">
         <span class="brand-text font-weight-light">ESchool</span>
-      </a>
+    </a>
 
-      <!-- Sidebar -->
-      <div class="sidebar">
+    <!-- Sidebar -->
+    <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="image">
-            <img src="{{ user.giaovien.profile_pic }}" class="img-circle elevation-2" alt="User Image">
-          </div>
-          <div class="info">
-            <a href="{% url 'teacher_home' %}" class="d-block">{{ user.last_name }} {{ user.first_name }}</a>
-          </div>
+            <div class="image">
+                <img src="{{ user.giaovien.profile_pic }}" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="{% url 'teacher_home' %}" class="d-block">{{ user.last_name }} {{ user.first_name }}</a>
+            </div>
         </div>
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" id="siderbar" name="siderbar">
-            <!-- Add icons to the links using the .nav-icon class
-                with font-awesome or any other icon font library -->
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"
+                id="siderbar" name="siderbar">
+                <!-- Add icons to the links using the .nav-icon class
+                    with font-awesome or any other icon font library -->
 
-            <li class="nav-item">
-              {% url 'teacher_home' as teacher_home %}
-              <a href="{{ teacher_home }}" class="nav-link {% if request.path == teacher_home %} active {% endif %}">
-                <i class="nav-icon fas fa-school"></i>
-                <p>
-                  Trang chủ
-                </p>
-              </a>
-            </li>
+                <li class="nav-item">
+                    {% url 'teacher_home' as teacher_home %}
+                    <a href="{{ teacher_home }}"
+                       class="nav-link {% if request.path == teacher_home %} active {% endif %}">
+                        <i class="nav-icon fas fa-school"></i>
+                        <p>
+                            Trang chủ
+                        </p>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-              {% url 'view_tuition' as view_tuition %}
-              {% url 'view_detail_tuition' as view_detail_tuition %}
-              <a href="{{ view_tuition }}" class="nav-link {% if request.path == view_tuition %} active {% endif %} {% if request.path == view_detail_tuition %} active {% endif %}">
-                <i class="nav-icon fas fa-chalkboard-teacher"></i>
-                <p>
-                  Quản lý giảng dạy
-                </p>
-              </a>
-            </li>
+                <li class="nav-item">
+                    {% url 'view_student' as view_student %}
+                    <a href="{{ view_student }}"
+                       class="nav-link {% if request.path == view_student %} active {% endif %}">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Quản lý lớp chủ nhiệm
+                        </p>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-              {% url 'view_student' as view_student %}
-              <a href="{{ view_student }}" class="nav-link {% if request.path == view_student %} active {% endif %}">
-                <i class="nav-icon fas fa-th"></i>
-                <p>
-                  Quản lý lớp chủ nhiệm
-                </p>
-              </a>
-            </li>
+                <li class="nav-item">
+                    {% url 'view_tuition' as view_tuition %}
+                    <a href="{{ view_tuition }}"
+                       class="nav-link {% if request.path == view_tuition %} active {% endif %}">
+                        <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                        <p>
+                            Lịch giảng dạy
+                        </p>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-              {% url 'assessment_student' as assessment_student %}
-              <a href="{{ assessment_student }}" class="nav-link {% if request.path == assessment_student %} active {% endif %}">
-                <i class="nav-icon fas fa-th"></i>
-                <p>
-                  Đánh giá học sinh
-                </p>
-              </a>
-            </li>
+                <li class="nav-item">
+                    {% url 'view_tuition' as view_tuition %}
+                    <a href="{{ view_tuition }}"
+                       class="nav-link {% if request.path == view_tuition %} active {% endif %}">
+                        <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                        <p>
+                            Quản lý điểm
+                        </p>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-              {% url 'profile_teacher' as profile_teacher %}
-              <a href="{{ profile_teacher }}" class="nav-link {% if request.path == profile_teacher %} active {% endif %}">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Thông tin cá nhân
-                </p>
-              </a>
-            </li>
+                <li class="nav-item">
+                    {% url 'assessment_student' as assessment_student %}
+                    <a href="{{ assessment_student }}"
+                       class="nav-link {% if request.path == assessment_student %} active {% endif %}">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Đánh giá học sinh
+                        </p>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-              {% url 'change_password' as change_password %}
-              <a href="{{ change_password }}" class="nav-link {% if request.path == change_password %} active {% endif %}">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Đổi mật khẩu
-                </p>
-              </a>
-            </li>
+                <li class="nav-item">
+                    {% url 'profile_teacher' as profile_teacher %}
+                    <a href="{{ profile_teacher }}"
+                       class="nav-link {% if request.path == profile_teacher %} active {% endif %}">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Thông tin cá nhân
+                        </p>
+                    </a>
+                </li>
 
-          </ul>
+                <li class="nav-item">
+                    {% url 'change_password' as change_password %}
+                    <a href="{{ change_password }}"
+                       class="nav-link {% if request.path == change_password %} active {% endif %}">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Đổi mật khẩu
+                        </p>
+                    </a>
+                </li>
+
+            </ul>
         </nav>
         <!-- /.sidebar-menu -->
 
-      </div>
-      <!-- /.sidebar -->
-    </aside>
+    </div>
+    <!-- /.sidebar -->
+</aside>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title>Thời khóa biểu cá nhân</title>
+    <title>Danh sách {{ lop_cn.ten_lop }}</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <style>
@@ -37,41 +37,37 @@
 <body>
 <div>
     <div>
-        <h2>Thời khóa biểu cá nhân</h2>
-        <h5>Họ tên: {{ giaovien }}</h5>
+        <h2>Danh sách học sinh {{ lop_cn.ten_lop|lower }}</h2>
+        <h5>Sỉ số: {{ lop_cn.si_so }}</h5>
+        <h5>Phòng học: {{ lop_cn.phong.ten_phong }}</h5>
+        <h5>Giáo viên chủ nhiệm: {{ giaovien }}</h5>
         <h5>Năm học: {{ namhoc }}</h5>
         <h5>Học kỳ: {{ hocky }}</h5>
     </div>
     <table>
         <thead>
         <tr>
-            <th>Tiết</th>
-            <th>Thứ 2</th>
-            <th>Thứ 3</th>
-            <th>Thứ 4</th>
-            <th>Thứ 5</th>
-            <th>Thứ 6</th>
-            <th>Thứ 7</th>
+            <th>STT</th>
+            <th>MHS</th>
+            <th>Họ Tên</th>
+            <th>Email</th>
+            <th>Quên Quán</th>
+            <th>Ngày sinh</th>
+            <th>Giới tính</th>
+            <th>Dân tộc</th>
         </tr>
         </thead>
         <tbody>
-        {% for items in lst_sang %}
+        {% for student in dshs %}
             <tr>
-            <td>Tiết {{ forloop.counter }}</td>
-            {% for item in items %}
-                <td>{{ item }}</td>
-            {% endfor %}
-            </tr>
-        {% endfor %}
-        <tr>
-            <td colspan="7" class="nghi_trua"><b>Nghỉ Trưa</b></td>
-        </tr>
-        {% for items in lst_chieu %}
-            <tr>
-            <td>Tiết {{ forloop.counter|add:"5" }}</td>
-            {% for item in items %}
-                <td>{{ item }}</td>
-            {% endfor %}
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.mahs }}</td>
+                <td>{{ student.mahs.last_name }} {{ student.mahs.first_name }}</td>
+                <td>{{ student.mahs.email }}</td>
+                <td>{{ student.que_quan }}</td>
+                <td>{{ student.ngay_sinh | date:"d-m-Y" }}</td>
+                <td>{{ student.gioi_tinh }}</td>
+                <td>{{ student.dan_toc }}</td>
             </tr>
         {% endfor %}
         </tbody>

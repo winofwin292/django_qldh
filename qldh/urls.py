@@ -63,6 +63,7 @@ urlpatterns = [
     path('danh_sach_giang_day/', TeacherView.view_tuition, name="view_tuition"),
     path('tai_xuong_tkb/', TeacherView.tkb_gv_pdf, name="tkb_gv_pdf"),
     path('danh_sach_hoc_sinh_chu_nhiem/', TeacherView.view_student, name="view_student"),
+    path('tai_xuong_dshs_cn/', TeacherView.dshs_cn_pdf, name="dshs_cn_pdf"),
     path('quan_ly_diem_so/<tuition_id>/<ma_lop>/', TeacherView.manage_mark, name="manage_mark"),
     path('quan_ly_chi_tiet_diem_so/<tuition_id>/<ma_lop>/<mark_id>/', TeacherView.manage_detail_mark,
          name="manage_detail_mark"),

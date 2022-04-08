@@ -124,6 +124,40 @@ def view_student(request):
     return render(request, 'teacher_templates/view_student_template.html', context)
 
 
+def dshs_cn_pdf(request):
+    dirname = os.path.dirname(__file__) + "\\tmp"
+    # data
+    nam_hoc = NamHoc.objects.get(hien_tai=True)
+    hoc_ky = HocKy.objects.get(hien_tai=True)
+    giao_vien = GiaoVien.objects.get(magv=request.user.username)
+    try:
+        lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
+        ds_hs = lop_cn.hocsinh_set.all()
+    except:
+        ds_hs = []
+
+    context = {
+        'namhoc': nam_hoc.mo_ta,
+        'hocky': hoc_ky.hoc_ky,
+        'giaovien': giao_vien.magv.last_name + ' ' + giao_vien.magv.first_name,
+        "dshs": ds_hs,
+        "lop_cn": lop_cn,
+    }
+    html_string = render_to_string('pdf_templates/ds_lop_chu_nhiem_template.html', context)
+
+    file_name ='ds-' + lop_cn.ten_lop + '.pdf'
+
+    html = HTML(string=html_string)
+    html.write_pdf(target=dirname + '\\' + file_name)
+
+    fs = FileSystemStorage(dirname)
+    with fs.open(file_name) as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="' + file_name + '"'
+        return response
+    return response
+
+
 def manage_mark(request, tuition_id, ma_lop):
     ds_hs = HocSinh.objects.filter(lop=ma_lop)
     lop = LopHoc.objects.get(ma_lop=ma_lop)
