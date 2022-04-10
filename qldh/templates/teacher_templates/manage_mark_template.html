@@ -1,109 +1,133 @@
 {% extends 'teacher_templates/base_template.html' %}
 
 {% block page_title %}
-    Danh sách học sinh  | {{ lop.ten_lop }} | Môn: {{ user.giaovien.day_mon.ten_mon }}
+    Quản lý điểm số
 {% endblock page_title %}
 
 {% block main_content %}
 
-{% load static %}
+    {% load static %}
 
-<section class="content">
+    <section class="content">
         <div class="container-fluid">
-        <a class="btn btn-primary" href="{% url 'view_tuition' %}" role="button">Trở lại danh sách giảng dạy</a> <br/>&nbsp;
             {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
+                <div class="form-group">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert"
+                                     style="margin-top: 10px;">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
+                            {% elif message.tags == "success" %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert"
+                                     style="margin-top: 10px;">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                                {% endif %}
-
-
-            <div class="row">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            <br>
+            <div class="row align-items-center">
+                <div class="col-6 mr-auto">
+                    <div class="form-floating">
+                        <select class="form-select" name="lop_hoc" id="lop_hoc">
+                            <option value="default">Chưa chọn</option>
+                            {% for lop in list_lh %}
+                                <option value="{{ lop.ma_lop }}">{{ lop.ten_lop }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="subject">Lớp học:</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary" id="luu" name="luu">Lưu</button>
+                    <button type="button" class="btn btn-primary" id="xuat_pdf" name="xuat_pdf">Xuất pdf</button>
+                </div>
 
                 <div class="col-md-12">
+                    <br>
                     <!-- general form elements -->
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Danh sách học sinh</h3>
-
-                            <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                                <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap">
-                            <thead>
+                            <table class="table table-bordered table-hover text-nowrap text-center">
+                                <thead>
                                 <tr>
-                                <th>STT</th>
-                                <th>Mã Học sinh</th>
-                                <th>Họ và Tên</th>
-                                <th>Học kỳ</th>
-                                <th>Năm học</th>
-                                <th>Điểm TB</th>
-                                <th>Trạng thái</th>
+                                    <th rowspan="2" class="align-middle">STT</th>
+                                    <th rowspan="2" class="align-middle">MHS</th>
+                                    <th rowspan="2" class="align-middle">Họ Tên</th>
+                                    <th colspan="3">Miệng</th>
+                                    <th colspan="4">15 phút</th>
+                                    <th colspan="8">1 tiết</th>
+                                    <th rowspan="2" class="align-middle">Học kỳ</th>
+                                    <th rowspan="2" class="align-middle">TBHK</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for student in ds_hs %}
                                 <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ student.mahs.mahs.username }}</td>
-                                <td>{{ student.mahs.mahs.last_name }} {{ student.mahs.mahs.first_name }}</td>
-                                <td>{{ student.hoc_ky }}</td>
-                                <td>{{ student.nam_hoc.mo_ta }}</td>
-                                <td>{{ student.diem }}</td>
-                                <td>{{ student.trang_thai }}</td>
-                                <td>
-                                    <a href="{% url 'manage_detail_mark' tuition_id=tuition.id ma_lop=lop.ma_lop mark_id=student.id %}" class="btn btn-success">Chi tiết điểm</a>
-                                    <!--<a href="{% url 'delete_student' student.mahs %}" class="btn btn-danger" onclick="return confirm('Bạn có thật sự muốn xóa?');">Xóa</a>-->
-                                </td>
+                                    <th>M1</th>
+                                    <th>M2</th>
+                                    <th>M3</th>
+                                    <th>P1</th>
+                                    <th>P2</th>
+                                    <th>P3</th>
+                                    <th>P4</th>
+                                    <th>T1</th>
+                                    <th>T2</th>
+                                    <th>T3</th>
+                                    <th>T4</th>
+                                    <th>T5</th>
+                                    <th>T6</th>
+                                    <th>T7</th>
+                                    <th>T8</th>
                                 </tr>
-                                {% endfor %}
-
-                            </tbody>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>HS000006</td>
+                                    <td>Lê Trung Thành</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
-                        </div>
+                    </div>
                     <!-- /.card -->
-
                 </div>
             </div>
 
         </div><!-- /.container-fluid -->
-      </section>
+    </section>
 
-  {% endblock main_content %}
+{% endblock main_content %}
 {% block custom_js %}
-<script>
-    $(document).ready(function(){
-        siderbar_data = "<li class='nav-item'><a href='#' class='nav-link active'><i class='nav-icon fas fa-tachometer-alt'></i> <p>Quản lý điểm số </p></a> </li>";
-        $("#siderbar").append(siderbar_data);
-    })
-</script>
+    <script>
+        $(document).ready(function () {
+        })
+    </script>
 {% endblock custom_js %}

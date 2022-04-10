@@ -43,7 +43,7 @@
       <!-- Left navbar links -->
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+          <a class="nav-link" id="hide_sidebar" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
       </ul>
 
@@ -136,6 +136,10 @@
 <script src="{% static "overlayScrollbars/js/jquery.overlayScrollbars.min.js"  %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dist/js/adminlte.js'  %}"></script>
+
+    <script>
+            document.getElementById('hide_sidebar').click();
+    </script>
 
 {% comment %} For Custom JS {% endcomment %}
 {% block custom_js %}

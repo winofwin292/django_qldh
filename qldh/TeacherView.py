@@ -5,8 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, \
-    DiemSo_ChiTiet, DiemSo, KetQuaHocTap, HocKy
+from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, DiemSo, KetQuaHocTap, HocKy
 from .forms import MarkForm
 import os
 from weasyprint import HTML
@@ -158,90 +157,88 @@ def dshs_cn_pdf(request):
     return response
 
 
-def manage_mark(request, tuition_id, ma_lop):
-    ds_hs = HocSinh.objects.filter(lop=ma_lop)
-    lop = LopHoc.objects.get(ma_lop=ma_lop)
-    tuition = GiangDay.objects.get(id=tuition_id)
-    nam = NamHoc.objects.get(nam_hoc=tuition.nam_hoc.nam_hoc)
-    mon = MonHoc.objects.get(ma_mon=tuition.magv.day_mon.ma_mon)
-    hoc_ky = tuition.hoc_ky
-    student_list = []
-    for hs in ds_hs:
-        student_mark = DiemSo.objects.get_or_create(mahs=hs, nam_hoc=nam, mon=mon, hoc_ky=hoc_ky)
-        sm = student_mark[0]
-        student_list.append(sm)
-    # print(student_list)
+def manage_mark(request):
+    nam_hoc = NamHoc.objects.get(hien_tai=True)
+    hoc_ky = HocKy.objects.get(hien_tai=True)
+    giang_day = GiangDay.objects.filter(magv=request.user.username, nam_hoc=nam_hoc, hoc_ky=hoc_ky)
+    list_tmp = []
+    list_lh = []
+
+    for item in giang_day:
+        if item.ma_lop.ma_lop not in list_tmp:
+            list_tmp.append(item.ma_lop.ma_lop)
+            lop_hoc = LopHoc.objects.get(ma_lop=item.ma_lop.ma_lop)
+            list_lh.append(lop_hoc)
+    # print(list_lh)
     context = {
-        "ds_hs": student_list,
-        "lop": lop,
-        "tuition": tuition,
+        "list_lh": list_lh,
     }
     return render(request, 'teacher_templates/manage_mark_template.html', context)
 
 
-def manage_detail_mark(request, tuition_id, ma_lop, mark_id):
-    ds = DiemSo.objects.get(id=mark_id)
-    detail_mark = DiemSo_ChiTiet.objects.get_or_create(mads=ds)
-    dm = detail_mark[0]
-    context = {
-        "dm": dm,
-        "ds": ds,
-        "tuition_id": tuition_id,
-        "ma_lop": ma_lop,
-    }
-    return render(request, 'teacher_templates/detail_mark_template.html', context)
-
-
-def edit_mark(request, tuition_id, ma_lop, mark_id):
-    ds = DiemSo.objects.get(id=mark_id)
-    detail_mark = DiemSo_ChiTiet.objects.get(mads=ds)
-    form = MarkForm()
-    form.fields['diem_mieng'].initial = detail_mark.diem_mieng
-    form.fields['diem_15_phut'].initial = detail_mark.diem_15_phut
-    form.fields['diem_45_phut'].initial = detail_mark.diem_45_phut
-    form.fields['diem_thi'].initial = detail_mark.diem_thi
-    context = {
-        "form": form,
-        "mark_id": mark_id,
-        "tuition_id": tuition_id,
-        "ma_lop": ma_lop,
-    }
-    return render(request, 'teacher_templates/edit_mark_template.html', context)
-
-
-def edit_mark_save(request, tuition_id, ma_lop, mark_id):
-    if request.method != "POST":
-        messages.error(request, "Invalid Method")
-        return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
-    else:
-        form = MarkForm(request.POST)
-
-        if form.is_valid():
-            diem_mieng = form.cleaned_data['diem_mieng']
-            diem_15_phut = form.cleaned_data['diem_15_phut']
-            diem_45_phut = form.cleaned_data['diem_45_phut']
-            diem_thi = form.cleaned_data['diem_thi']
-            try:
-                ds = DiemSo.objects.get(id=mark_id)
-                dsct = DiemSo_ChiTiet.objects.get(mads=ds)
-                dsct.diem_mieng = diem_mieng
-                dsct.diem_15_phut = diem_15_phut
-                dsct.diem_45_phut = diem_45_phut
-                dsct.diem_thi = diem_thi
-                dtb = (diem_mieng + diem_15_phut + diem_45_phut * 2 + diem_thi * 3) / 7
-                # print(type(dtb))
-                # print(dtb)
-                ds.diem = round(dtb, 2)
-                ds.trang_thai = "Đã nhập"
-                ds.save()
-                dsct.save()
-                messages.success(request, "Chỉnh sửa thành công!")
-                return redirect('/qldh/quan_ly_chi_tiet_diem_so/' + tuition_id + '/' + ma_lop + '/' + mark_id)
-            except:
-                messages.error(request, "Chỉnh sửa không thành công!!")
-                return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
-        else:
-            return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
+# def manage_detail_mark(request, tuition_id, ma_lop, mark_id):
+#     ds = DiemSo.objects.get(id=mark_id)
+#     detail_mark = DiemSo_ChiTiet.objects.get_or_create(mads=ds)
+#     dm = detail_mark[0]
+#     context = {
+#         "dm": dm,
+#         "ds": ds,
+#         "tuition_id": tuition_id,
+#         "ma_lop": ma_lop,
+#     }
+#     return render(request, 'teacher_templates/detail_mark_template.html', context)
+#
+#
+# def edit_mark(request, tuition_id, ma_lop, mark_id):
+#     ds = DiemSo.objects.get(id=mark_id)
+#     detail_mark = DiemSo_ChiTiet.objects.get(mads=ds)
+#     form = MarkForm()
+#     form.fields['diem_mieng'].initial = detail_mark.diem_mieng
+#     form.fields['diem_15_phut'].initial = detail_mark.diem_15_phut
+#     form.fields['diem_45_phut'].initial = detail_mark.diem_45_phut
+#     form.fields['diem_thi'].initial = detail_mark.diem_thi
+#     context = {
+#         "form": form,
+#         "mark_id": mark_id,
+#         "tuition_id": tuition_id,
+#         "ma_lop": ma_lop,
+#     }
+#     return render(request, 'teacher_templates/edit_mark_template.html', context)
+#
+#
+# def edit_mark_save(request, tuition_id, ma_lop, mark_id):
+#     if request.method != "POST":
+#         messages.error(request, "Invalid Method")
+#         return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
+#     else:
+#         form = MarkForm(request.POST)
+#
+#         if form.is_valid():
+#             diem_mieng = form.cleaned_data['diem_mieng']
+#             diem_15_phut = form.cleaned_data['diem_15_phut']
+#             diem_45_phut = form.cleaned_data['diem_45_phut']
+#             diem_thi = form.cleaned_data['diem_thi']
+#             try:
+#                 ds = DiemSo.objects.get(id=mark_id)
+#                 dsct = DiemSo_ChiTiet.objects.get(mads=ds)
+#                 dsct.diem_mieng = diem_mieng
+#                 dsct.diem_15_phut = diem_15_phut
+#                 dsct.diem_45_phut = diem_45_phut
+#                 dsct.diem_thi = diem_thi
+#                 dtb = (diem_mieng + diem_15_phut + diem_45_phut * 2 + diem_thi * 3) / 7
+#                 # print(type(dtb))
+#                 # print(dtb)
+#                 ds.diem = round(dtb, 2)
+#                 ds.trang_thai = "Đã nhập"
+#                 ds.save()
+#                 dsct.save()
+#                 messages.success(request, "Chỉnh sửa thành công!")
+#                 return redirect('/qldh/quan_ly_chi_tiet_diem_so/' + tuition_id + '/' + ma_lop + '/' + mark_id)
+#             except:
+#                 messages.error(request, "Chỉnh sửa không thành công!!")
+#                 return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
+#         else:
+#             return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
 
 
 def assessment_student(request):

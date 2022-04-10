@@ -151,18 +151,29 @@ class DiemSo(models.Model):
     nam_hoc = models.ForeignKey(NamHoc, on_delete=models.CASCADE)
     hoc_ky = models.ForeignKey(HocKy, on_delete=models.CASCADE, default="0")
     mon = models.ForeignKey(MonHoc, on_delete=models.CASCADE)
-    diem = models.FloatField(default=0.0, null=True)
-    trang_thai = models.CharField(max_length=50, default="Chưa nhập")
+    m1 = models.FloatField(default=0.0)
+    m2 = models.FloatField(default=0.0)
+    m3 = models.FloatField(default=0.0)
+    p1 = models.FloatField(default=0.0)
+    p2 = models.FloatField(default=0.0)
+    p3 = models.FloatField(default=0.0)
+    p4 = models.FloatField(default=0.0)
+    t1 = models.FloatField(default=0.0)
+    t2 = models.FloatField(default=0.0)
+    t3 = models.FloatField(default=0.0)
+    t4 = models.FloatField(default=0.0)
+    t5 = models.FloatField(default=0.0)
+    t6 = models.FloatField(default=0.0)
+    t7 = models.FloatField(default=0.0)
+    t8 = models.FloatField(default=0.0)
+    hk = models.FloatField(default=0.0)
+    tb = models.FloatField(default=0.0, null=True)
     objects = models.Manager()
 
-
-class DiemSo_ChiTiet(models.Model):
-    mads = models.OneToOneField(DiemSo, on_delete=models.CASCADE, primary_key=True)
-    diem_mieng = models.FloatField(default=0.0)
-    diem_15_phut = models.FloatField(default=0.0)
-    diem_45_phut = models.FloatField(default=0.0)
-    diem_thi = models.FloatField(default=0.0)
-    objects = models.Manager()
+    def save(self, *args, **kwargs):
+        self.tb = round((self.m1 + self.m2 + self.m3 + self.p1 + self.p2 + self.p3 + self.p4 +
+                   (self.t1 + self.t2 + self.t3 + self.t4 + self.t5 + self.t6 + self.t7 + self.t8)*2 + self.hk*3)/26, 2)
+        super(DiemSo, self).save(*args, **kwargs)
 
 
 # Creating Django Signals

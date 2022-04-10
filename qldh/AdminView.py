@@ -420,29 +420,29 @@ def add_classroom_from_xls(request):
 def add_classroom_save(request):
     if request.method != "POST":
         messages.error(request, "Lỗi phương thức")
-        return redirect('add_classroom')
+        return redirect('manage_classroom')
     else:
         form = AddClassroomForm(request.POST)
 
         if form.is_valid():
             ten_lop = form.cleaned_data['ten_lop']
-            nam_hoc = form.cleaned_data['nam_hoc']
+            nam_hoc = NamHoc.objects.get(hien_tai=True)
             khoi = form.cleaned_data['khoi']
             phong = form.cleaned_data['phong']
             giao_vien = form.cleaned_data['giao_vien_chu_nhiem']
 
             try:
-                lh = LopHoc.objects.create(ma_lop=auto_ids(LopHoc, "LH", column_id='ma_lop'), ten_lop=ten_lop, nam_hoc_id=nam_hoc,
-                                           khoi=khoi,
-                                           phong_id=phong, si_so=0, giao_vien_chu_nhiem_id=giao_vien)
+                lh = LopHoc.objects.create(ma_lop=auto_ids(LopHoc, "LH", column_id='ma_lop'), ten_lop=ten_lop,
+                                           nam_hoc=nam_hoc, khoi=khoi, phong_id=phong, si_so=0,
+                                           giao_vien_chu_nhiem_id=giao_vien)
                 lh.save()
                 messages.success(request, "Tạo lớp học thành công!")
-                return redirect('add_classroom')
+                return redirect('manage_classroom')
             except:
                 messages.error(request, "Tạo không thành công!!")
-                return redirect('add_classroom')
+                return redirect('manage_classroom')
         else:
-            return redirect('add_classroom')
+            return redirect('manage_classroom')
 
 
 def edit_classroom(request, ma_lop):
@@ -811,29 +811,30 @@ def them_moi_giang_day(request):
                     minute_start = 10
             #Thêm mới sự kiện trên google cal
 
-            service = get_calendar_service()
-            now_datetime = datetime.now().date()
-            now_dateofweek = datetime.now().isoweekday()
-            start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day,
-                                  hour_start, minute_start) + timedelta(days=((int(thu)-1)-now_dateofweek))
-            end_time = start_time + timedelta(minutes=45)
-            event_result = service.events().insert(calendarId='primary',
-                                                   body={
-                                                       "summary": lop.ten_lop,
-                                                       "description": lop.ten_lop + ' - Tiết ' + tiet,
-                                                       "start": {"dateTime": start_time.isoformat(),
-                                                                 "timeZone": 'Asia/Ho_Chi_Minh'},
-                                                       "end": {"dateTime": end_time.isoformat(),
-                                                               "timeZone": 'Asia/Ho_Chi_Minh'},
-                                                       'recurrence': [
-                                                           'RRULE:FREQ=WEEKLY;COUNT=18'
-                                                       ],
-                                                       # 'attendees': [
-                                                       #     {'email': 'winofwin292@gmail.com'},
-                                                       # ],
-                                                   }
-                                                   ).execute()
-            gd.cal_id = event_result['id']
+            # service = get_calendar_service()
+            # now_datetime = datetime.now().date()
+            # now_dateofweek = datetime.now().isoweekday()
+            # start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day,
+            #                       hour_start, minute_start) + timedelta(days=((int(thu)-1)-now_dateofweek))
+            # end_time = start_time + timedelta(minutes=45)
+            # event_result = service.events().insert(calendarId='primary',
+            #                                        body={
+            #                                            "summary": lop.ten_lop,
+            #                                            "description": lop.ten_lop + ' - Tiết ' + tiet,
+            #                                            "start": {"dateTime": start_time.isoformat(),
+            #                                                      "timeZone": 'Asia/Ho_Chi_Minh'},
+            #                                            "end": {"dateTime": end_time.isoformat(),
+            #                                                    "timeZone": 'Asia/Ho_Chi_Minh'},
+            #                                            'recurrence': [
+            #                                                'RRULE:FREQ=WEEKLY;COUNT=18'
+            #                                            ],
+            #                                            # 'attendees': [
+            #                                            #     {'email': 'winofwin292@gmail.com'},
+            #                                            # ],
+            #                                        }
+            #                                        ).execute()
+            # gd.cal_id = event_result['id']
+
             gd.save()
             return JsonResponse({"success": "Thêm mới thành công"}, content_type="application/json", safe=False)
         except Exception:

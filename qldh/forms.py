@@ -48,16 +48,6 @@ try:
 except:
     ds_giao_vien = []
 
-# Năm học
-try:
-    nam_hocs = NamHoc.objects.all()
-    ds_nam_hoc = []
-    for nh in nam_hocs:
-        nam = (nh.nam_hoc, nh.mo_ta)
-        ds_nam_hoc.append(nam)
-except:
-    ds_nam_hoc = []
-
 # Phòng học
 try:
     phong = PhongHoc.objects.all()
@@ -185,10 +175,6 @@ class AddClassroomForm(forms.Form):
                               max_length=50,
                               required=True,
                               widget=forms.TextInput)
-    nam_hoc = forms.ChoiceField(label="Năm học",
-                                required=True,
-                                choices=ds_nam_hoc,
-                                widget=forms.Select)
     khoi = forms.ChoiceField(label="Khối",
                              required=True,
                              choices=grade_list,
@@ -206,8 +192,7 @@ class AddClassroomForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Div(FloatingField('ten_lop')),
-            Row(Div(FloatingField('nam_hoc'), css_class='col-md'),
+            Row(Div(FloatingField('ten_lop'), css_class='col-md'),
                 Div(FloatingField('khoi'), css_class='col-md')),
             Row(Div(FloatingField('phong'), css_class='col-md'),
                 Div(FloatingField('giao_vien_chu_nhiem'), css_class='col-md')),
@@ -221,10 +206,6 @@ class EditClassroomForm(forms.Form):
                               max_length=50,
                               required=True,
                               widget=forms.TextInput)
-    nam_hoc = forms.ChoiceField(label="Năm học",
-                                required=True,
-                                choices=ds_nam_hoc,
-                                widget=forms.Select)
     khoi = forms.ChoiceField(label="Khối",
                              required=True,
                              choices=grade_list,
@@ -244,8 +225,7 @@ class EditClassroomForm(forms.Form):
         self.helper.layout = Layout(
             Row(Div(FloatingField('ma_lop'), css_class='col-md'),
                 Div(FloatingField('ten_lop'), css_class='col-md')),
-            Row(Div(FloatingField('nam_hoc'), css_class='col-md'),
-                Div(FloatingField('khoi'), css_class='col-md')),
+                Div(FloatingField('khoi'), css_class='col-md'),
             Row(Div(FloatingField('phong'), css_class='col-md'),
                 Div(FloatingField('giao_vien_chu_nhiem'), css_class='col-md')),
         )
