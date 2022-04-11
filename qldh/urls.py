@@ -65,6 +65,7 @@ urlpatterns = [
     path('danh_sach_hoc_sinh_chu_nhiem/', TeacherView.view_student, name="view_student"),
     path('tai_xuong_dshs_cn/', TeacherView.dshs_cn_pdf, name="dshs_cn_pdf"),
     path('quan_ly_diem_so/', TeacherView.manage_mark, name="manage_mark"),
+    path('lay_ds_ajax/', TeacherView.lay_danh_sach_hoc_sinh, name="lay_ds_ajax"),
     # path('quan_ly_chi_tiet_diem_so/<tuition_id>/<ma_lop>/<mark_id>/', TeacherView.manage_detail_mark,
     #      name="manage_detail_mark"),
     # path('chinh_sua_diem_so/<tuition_id>/<ma_lop>/<mark_id>/', TeacherView.edit_mark, name="edit_mark"),

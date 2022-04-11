@@ -452,7 +452,6 @@ def edit_classroom(request, ma_lop):
 
     form.fields["ma_lop"].initial = lh.ma_lop
     form.fields["ten_lop"].initial = lh.ten_lop
-    form.fields["nam_hoc"].initial = lh.nam_hoc.nam_hoc
     form.fields["khoi"].initial = lh.khoi
     form.fields["phong"].initial = lh.phong.ma_phong
     form.fields["giao_vien_chu_nhiem"].initial = lh.giao_vien_chu_nhiem.magv
@@ -618,7 +617,7 @@ def add_student_save(request):
                 messages.error(request, "Tạo không thành công!!")
                 return redirect('manage_student')
         else:
-            return redirect('add_student')
+            return redirect('manage_student')
 
 
 def edit_student(request, mahs):
@@ -634,13 +633,12 @@ def edit_student(request, mahs):
     form.fields['dan_toc'].initial = hs.dan_toc
     form.fields['gioi_tinh'].initial = hs.gioi_tinh
     form.fields['ngay_sinh'].initial = hs.ngay_sinh
-    form.fields['lop'].initial = hs.lop.ten_lop
+    form.fields['lop'].initial = hs.lop.ma_lop
 
     context = {
         "mahs": mahs,
         "form": form
     }
-
     return render(request, 'admin_templates/edit_student_template.html', context)
 
 
@@ -650,7 +648,7 @@ def edit_student_save(request):
     else:
         mahs = request.session.get('mahs')
         if mahs == None:
-            return redirect('/qldh/quan_ly_hoc_sinh/')
+            return redirect('manage_student')
 
         form = EditStudentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -693,12 +691,12 @@ def edit_student_save(request):
                 del request.session['mahs']
 
                 messages.success(request, "Chỉnh sửa thông tin học sinh thành công!")
-                return redirect('/qldh/chinh_sua_hoc_sinh/' + mahs)
+                return redirect('manage_student')
             except:
                 messages.success(request, "Lỗi khi cập nhât.")
-                return redirect('/qldh/chinh_sua_hoc_sinh/' + mahs)
+                return redirect('manage_student')
         else:
-            return redirect('/qldh/chinh_sua_hoc_sinh/' + mahs)
+            return redirect('manage_student')
 
 
 def delete_student(request, mahs):

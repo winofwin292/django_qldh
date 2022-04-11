@@ -4,6 +4,21 @@
     Quản lý điểm số
 {% endblock page_title %}
 
+{% block custom_css %}
+    <style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+    }
+    </style>
+{% endblock custom_css %}
+
 {% block main_content %}
 
     {% load static %}
@@ -59,7 +74,7 @@
                     <div class="card">
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
-                            <table class="table table-bordered table-hover text-nowrap text-center">
+                            <table id="ds_table" class="table table-bordered table-hover text-nowrap text-center">
                                 <thead>
                                 <tr>
                                     <th rowspan="2" class="align-middle">STT</th>
@@ -89,29 +104,29 @@
                                     <th>T8</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>HS000006</td>
-                                    <td>Lê Trung Thành</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
+                                <tbody id="tbody_tb">
+                                {#                                <tr>#}
+                                {#                                    <td>1</td>#}
+                                {#                                    <td>HS000006</td>#}
+                                {#                                    <td>Lê Trung Thành</td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                    <td></td>#}
+                                {#                                </tr>#}
                                 </tbody>
                             </table>
                         </div>
@@ -127,7 +142,72 @@
 {% endblock main_content %}
 {% block custom_js %}
     <script>
-        $(document).ready(function () {
-        })
+        let ma_lop;
+
+        function lay_ds_hs() {
+            ma_lop = $("#lop_hoc").val()
+            $.ajax({
+                type: "POST",
+                url: "{% url 'lay_ds_ajax' %}",
+                data: {
+                    ma_lop: ma_lop,
+                },
+                datatype: 'json',
+                success: function (response) {
+                    var json_data = JSON.parse(response);
+                    var table = document.getElementById('tbody_tb');
+                    var stt = 1;
+                    for (key in json_data) {
+                        var row = table.insertRow(-1);
+
+                        row.insertCell(0).innerHTML = stt;
+                        row.insertCell(-1).innerHTML = json_data[key]["mhs"];
+                        row.insertCell(-1).innerHTML = json_data[key]["hoten"];
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'm1" value="' +
+                            json_data[key]["m1"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'm2" value="' +
+                            json_data[key]["m2"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'm3" value="' +
+                            json_data[key]["m3"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'p1" value="' +
+                            json_data[key]["p1"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'p2" value="' +
+                            json_data[key]["p2"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'p3" value="' +
+                            json_data[key]["p3"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'p4" value="' +
+                            json_data[key]["p4"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't1" value="' +
+                            json_data[key]["t1"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't2" value="' +
+                            json_data[key]["t2"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't3" value="' +
+                            json_data[key]["t3"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't4" value="' +
+                            json_data[key]["t4"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't5" value="' +
+                            json_data[key]["t5"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't6" value="' +
+                            json_data[key]["t6"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't7" value="' +
+                            json_data[key]["t7"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 't8" value="' +
+                            json_data[key]["t8"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = '<input type="number" id="' + stt + 'hk" value="' +
+                            json_data[key]["hk"] + '" min="0" max="10" style="width: 40px;" step="0.25">';
+                        row.insertCell(-1).innerHTML = json_data[key]["tb"];
+                        stt++;
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+        $("#lop_hoc").change(function () {
+            document.getElementById('tbody_tb').innerHTML = "";
+            lay_ds_hs();
+        });
     </script>
 {% endblock custom_js %}

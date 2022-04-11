@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, DiemSo, KetQuaHocTap, HocKy
+from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, DiemSo, \
+    KetQuaHocTap, HocKy
 from .forms import MarkForm
 import os
 from weasyprint import HTML
@@ -96,7 +97,7 @@ def tkb_gv_pdf(request):
     }
     html_string = render_to_string('pdf_templates/tkb_gv_template.html', context)
 
-    file_name =nam_hoc.nam_hoc + '-' + hoc_ky.hoc_ky + '-' + giao_vien.magv.username + '.pdf'
+    file_name = nam_hoc.nam_hoc + '-' + hoc_ky.hoc_ky + '-' + giao_vien.magv.username + '.pdf'
 
     html = HTML(string=html_string)
     html.write_pdf(target=dirname + '\\' + file_name)
@@ -144,7 +145,7 @@ def dshs_cn_pdf(request):
     }
     html_string = render_to_string('pdf_templates/ds_lop_chu_nhiem_template.html', context)
 
-    file_name ='ds-' + lop_cn.ten_lop + '.pdf'
+    file_name = 'ds-' + lop_cn.ten_lop + '.pdf'
 
     html = HTML(string=html_string)
     html.write_pdf(target=dirname + '\\' + file_name)
@@ -169,11 +170,38 @@ def manage_mark(request):
             list_tmp.append(item.ma_lop.ma_lop)
             lop_hoc = LopHoc.objects.get(ma_lop=item.ma_lop.ma_lop)
             list_lh.append(lop_hoc)
-    # print(list_lh)
     context = {
         "list_lh": list_lh,
     }
     return render(request, 'teacher_templates/manage_mark_template.html', context)
+
+
+@csrf_exempt
+def lay_danh_sach_hoc_sinh(request):
+    if request.accepts("application/json") and request.method == "POST":
+        try:
+            ma_lop = request.POST.get('ma_lop')
+            lop = LopHoc.objects.get(ma_lop=ma_lop)
+            giao_vien = GiaoVien.objects.get(magv=request.user.username)
+            mon = MonHoc.objects.get(ma_mon=giao_vien.day_mon.ma_mon)
+            nam_hoc = NamHoc.objects.get(hien_tai=True)
+            hoc_ky = HocKy.objects.get(hien_tai=True)
+
+            filter_hs = HocSinh.objects.filter(lop=lop)
+
+            list_ds = []
+            for item in filter_hs:
+                ds = DiemSo.objects.get_or_create(mahs=item, nam_hoc=nam_hoc, hoc_ky=hoc_ky, mon=mon)[0]
+                small_data = {"mhs": item.mahs.username, "hoten": item.mahs.last_name + ' ' + item.mahs.first_name,
+                              "m1": ds.m1, "m2": ds.m2, "m3": ds.m3, "p1": ds.p1, "p2": ds.p2, "p3": ds.p3, "p4": ds.p4,
+                              "t1": ds.t1, "t2": ds.t2, "t3": ds.t3, "t4": ds.t4, "t5": ds.t5, "t6": ds.t6, "t7": ds.t7,
+                              "t8": ds.t8, "hk": ds.hk, "tb": ds.tb}
+                list_ds.append(small_data)
+            return JsonResponse(json.dumps(list_ds), content_type="application/json", safe=False)
+        except Exception:
+            traceback.print_exc()
+            return JsonResponse({"error": "Lỗi: Tải dữ liệu không thành công"}, status=400)
+    return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
 
 
 # def manage_detail_mark(request, tuition_id, ma_lop, mark_id):
