@@ -6,16 +6,16 @@
 
 {% block custom_css %}
     <style>
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-    }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            /* display: none; <- Crashes Chrome on hover */
+            -webkit-appearance: none;
+            margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+        }
 
-    input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
-    }
+        input[type=number] {
+            -moz-appearance: textfield; /* Firefox */
+        }
     </style>
 {% endblock custom_css %}
 
@@ -144,6 +144,14 @@
     <script>
         let ma_lop;
 
+        function check(gia_tri) {
+            return !(gia_tri > 10 || gia_tri < 0);
+        }
+
+        function luu_ds(id, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk){
+
+        }
+
         function lay_ds_hs() {
             ma_lop = $("#lop_hoc").val()
             $.ajax({
@@ -159,7 +167,7 @@
                     var stt = 1;
                     for (key in json_data) {
                         var row = table.insertRow(-1);
-
+                        row.id = json_data[key]["id"];
                         row.insertCell(0).innerHTML = stt;
                         row.insertCell(-1).innerHTML = json_data[key]["mhs"];
                         row.insertCell(-1).innerHTML = json_data[key]["hoten"];
@@ -208,6 +216,42 @@
         $("#lop_hoc").change(function () {
             document.getElementById('tbody_tb').innerHTML = "";
             lay_ds_hs();
+        });
+
+        $("#luu").click(function () {
+            //console.log('luu')
+            if ($("#lop_hoc").val() == 'default') {
+                alert("Vui lòng chọn lớp học");
+            } else {
+                var table = document.getElementById('tbody_tb');
+                var id, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk;
+                for (let i = 1; i <= table.rows.length; i++) {
+                    id = document.getElementsByTagName("tr")[i+1].id;
+                    m1 = document.getElementById(i + 'm1').value
+                    m2 = document.getElementById(i + 'm2').value
+                    m3 = document.getElementById(i + 'm3').value
+                    p1 = document.getElementById(i + 'p1').value
+                    p2 = document.getElementById(i + 'p2').value
+                    p3 = document.getElementById(i + 'p3').value
+                    p4 = document.getElementById(i + 'p4').value
+                    t1 = document.getElementById(i + 't1').value
+                    t2 = document.getElementById(i + 't2').value
+                    t3 = document.getElementById(i + 't3').value
+                    t4 = document.getElementById(i + 't4').value
+                    t5 = document.getElementById(i + 't5').value
+                    t6 = document.getElementById(i + 't6').value
+                    t7 = document.getElementById(i + 't7').value
+                    t8 = document.getElementById(i + 't8').value
+                    hk = document.getElementById(i + 'hk').value
+                    if (check(m1) && check(m2) && check(m3) && check(p1) && check(p2) && check(p3) && check(p4) &&
+                        check(t1) && check(t2) && check(t3) && check(t4) && check(t5) && check(t6) && check(t7) && check(t8) && check(hk)) {
+                        luu_ds(id, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk);
+                    } else {
+                        alert("Vui lòng nhập giá trị nhỏ hơn hoặc bằng 10 và lơn hơn hoặc bằng 0");
+                    }
+                }
+            }
+
         });
     </script>
 {% endblock custom_js %}

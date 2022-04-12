@@ -192,7 +192,7 @@ def lay_danh_sach_hoc_sinh(request):
             list_ds = []
             for item in filter_hs:
                 ds = DiemSo.objects.get_or_create(mahs=item, nam_hoc=nam_hoc, hoc_ky=hoc_ky, mon=mon)[0]
-                small_data = {"mhs": item.mahs.username, "hoten": item.mahs.last_name + ' ' + item.mahs.first_name,
+                small_data = {"id":ds.id,"mhs": item.mahs.username, "hoten": item.mahs.last_name + ' ' + item.mahs.first_name,
                               "m1": ds.m1, "m2": ds.m2, "m3": ds.m3, "p1": ds.p1, "p2": ds.p2, "p3": ds.p3, "p4": ds.p4,
                               "t1": ds.t1, "t2": ds.t2, "t3": ds.t3, "t4": ds.t4, "t5": ds.t5, "t6": ds.t6, "t7": ds.t7,
                               "t8": ds.t8, "hk": ds.hk, "tb": ds.tb}
