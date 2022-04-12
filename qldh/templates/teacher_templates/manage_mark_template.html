@@ -148,8 +148,39 @@
             return !(gia_tri > 10 || gia_tri < 0);
         }
 
-        function luu_ds(id, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk){
+        function luu_ds(id_ds, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'luu_diem_so' %}",
+                data: {
+                    id_ds: id_ds,
+                    m1: m1,
+                    m2: m2,
+                    m3: m3,
+                    p1: p1,
+                    p2: p2,
+                    p3: p3,
+                    p4: p4,
+                    t1: t1,
+                    t2: t2,
+                    t3: t3,
+                    t4: t4,
+                    t5: t5,
+                    t6: t6,
+                    t7: t7,
+                    t8: t8,
+                    hk: hk,
+                },
+                data_type: "json",
+                success: function (response) {
+                },
+                error: function (response) {
+                },
+            });
+        }
 
+        function clear_table() {
+            document.getElementById('tbody_tb').innerHTML = "";
         }
 
         function lay_ds_hs() {
@@ -208,25 +239,24 @@
                     }
                 },
                 error: function (response) {
-                    console.log(response)
+                    alert("Vui lòng chọn giá trị hợp lệ");
                 }
             });
         }
 
         $("#lop_hoc").change(function () {
-            document.getElementById('tbody_tb').innerHTML = "";
+            clear_table();
             lay_ds_hs();
         });
 
         $("#luu").click(function () {
-            //console.log('luu')
             if ($("#lop_hoc").val() == 'default') {
                 alert("Vui lòng chọn lớp học");
             } else {
                 var table = document.getElementById('tbody_tb');
-                var id, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk;
+                var id_ds, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk;
                 for (let i = 1; i <= table.rows.length; i++) {
-                    id = document.getElementsByTagName("tr")[i+1].id;
+                    id_ds = document.getElementsByTagName("tr")[i + 1].id;
                     m1 = document.getElementById(i + 'm1').value
                     m2 = document.getElementById(i + 'm2').value
                     m3 = document.getElementById(i + 'm3').value
@@ -245,13 +275,26 @@
                     hk = document.getElementById(i + 'hk').value
                     if (check(m1) && check(m2) && check(m3) && check(p1) && check(p2) && check(p3) && check(p4) &&
                         check(t1) && check(t2) && check(t3) && check(t4) && check(t5) && check(t6) && check(t7) && check(t8) && check(hk)) {
-                        luu_ds(id, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk);
+                        luu_ds(id_ds, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk);
+                        alert("Lưu thành công");
                     } else {
                         alert("Vui lòng nhập giá trị nhỏ hơn hoặc bằng 10 và lơn hơn hoặc bằng 0");
+                        return;
                     }
                 }
+                clear_table();
+                lay_ds_hs();
             }
+        });
 
+        $("#xuat_pdf").click(function () {
+            if ($("#lop_hoc").val() == 'default') {
+                alert("Vui lòng chọn lớp học");
+            } else {
+                var link = '{% url 'bang_diem_pdf' 'ma_lop' %}';
+                link = link.replace('ma_lop', $("#lop_hoc").val());
+                window.location.href = link;
+            }
         });
     </script>
 {% endblock custom_js %}

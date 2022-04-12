@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Bảng điểm {{ lop.ten_lop }}</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            width: 100%;
+        }
+
+        @page {
+            size: landscape;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h2>Bảng điểm {{ lop.ten_lop|lower }}</h2>
+        <h5>Môn: {{ mon.ten_mon }} - Giáo viên giảng dạy: {{ giaovien }}</h5>
+        <h5>Học kỳ: {{ hocky }} - Năm học: {{ namhoc }}</h5>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th rowspan="2">STT</th>
+            <th rowspan="2">MHS</th>
+            <th rowspan="2">Họ Tên</th>
+            <th colspan="3">Miệng</th>
+            <th colspan="4">15 phút</th>
+            <th colspan="8">1 tiết</th>
+            <th rowspan="2">Học kỳ</th>
+            <th rowspan="2">TBHK</th>
+        </tr>
+        <tr>
+            <th>M1</th>
+            <th>M2</th>
+            <th>M3</th>
+            <th>P1</th>
+            <th>P2</th>
+            <th>P3</th>
+            <th>P4</th>
+            <th>T1</th>
+            <th>T2</th>
+            <th>T3</th>
+            <th>T4</th>
+            <th>T5</th>
+            <th>T6</th>
+            <th>T7</th>
+            <th>T8</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in bang_diem %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.mahs.mahs.username }}</td>
+                <td>{{ student.mahs.mahs.last_name }} {{ student.mahs.mahs.first_name }}</td>
+                <td>{{ student.m1 }}</td>
+                <td>{{ student.m2 }}</td>
+                <td>{{ student.m3 }}</td>
+                <td>{{ student.p1 }}</td>
+                <td>{{ student.p2 }}</td>
+                <td>{{ student.p3 }}</td>
+                <td>{{ student.p4 }}</td>
+                <td>{{ student.t1 }}</td>
+                <td>{{ student.t2 }}</td>
+                <td>{{ student.t3 }}</td>
+                <td>{{ student.t4 }}</td>
+                <td>{{ student.t5 }}</td>
+                <td>{{ student.t6 }}</td>
+                <td>{{ student.t7 }}</td>
+                <td>{{ student.t8 }}</td>
+                <td>{{ student.hk }}</td>
+                <td>{{ student.tb }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <p>Ngày in: {% now 'd/m/Y H:m:s' %}</p>
+</div>
+</body>
+</html>

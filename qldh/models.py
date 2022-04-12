@@ -171,8 +171,10 @@ class DiemSo(models.Model):
     objects = models.Manager()
 
     def save(self, *args, **kwargs):
-        self.tb = round((self.m1 + self.m2 + self.m3 + self.p1 + self.p2 + self.p3 + self.p4 +
-                   (self.t1 + self.t2 + self.t3 + self.t4 + self.t5 + self.t6 + self.t7 + self.t8)*2 + self.hk*3)/26, 2)
+        self.tb = round((float(self.m1) + float(self.m2) + float(self.m3) + float(self.p1) + float(self.p2) + float(
+            self.p3) + float(self.p4) + ((float(self.t1) + float(self.t2) + float(self.t3) + float(self.t4) +
+                                          float(self.t5) + float(self.t6) + float(self.t7) + float(self.t8)) * 2) +
+                         (float(self.hk) * 3)) / 26, 2)
         super(DiemSo, self).save(*args, **kwargs)
 
 

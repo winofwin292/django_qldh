@@ -192,7 +192,7 @@ def lay_danh_sach_hoc_sinh(request):
             list_ds = []
             for item in filter_hs:
                 ds = DiemSo.objects.get_or_create(mahs=item, nam_hoc=nam_hoc, hoc_ky=hoc_ky, mon=mon)[0]
-                small_data = {"id":ds.id,"mhs": item.mahs.username, "hoten": item.mahs.last_name + ' ' + item.mahs.first_name,
+                small_data = {"id": ds.id, "mhs": item.mahs.username, "hoten": item.mahs.last_name + ' ' + item.mahs.first_name,
                               "m1": ds.m1, "m2": ds.m2, "m3": ds.m3, "p1": ds.p1, "p2": ds.p2, "p3": ds.p3, "p4": ds.p4,
                               "t1": ds.t1, "t2": ds.t2, "t3": ds.t3, "t4": ds.t4, "t5": ds.t5, "t6": ds.t6, "t7": ds.t7,
                               "t8": ds.t8, "hk": ds.hk, "tb": ds.tb}
@@ -204,69 +204,88 @@ def lay_danh_sach_hoc_sinh(request):
     return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
 
 
-# def manage_detail_mark(request, tuition_id, ma_lop, mark_id):
-#     ds = DiemSo.objects.get(id=mark_id)
-#     detail_mark = DiemSo_ChiTiet.objects.get_or_create(mads=ds)
-#     dm = detail_mark[0]
-#     context = {
-#         "dm": dm,
-#         "ds": ds,
-#         "tuition_id": tuition_id,
-#         "ma_lop": ma_lop,
-#     }
-#     return render(request, 'teacher_templates/detail_mark_template.html', context)
-#
-#
-# def edit_mark(request, tuition_id, ma_lop, mark_id):
-#     ds = DiemSo.objects.get(id=mark_id)
-#     detail_mark = DiemSo_ChiTiet.objects.get(mads=ds)
-#     form = MarkForm()
-#     form.fields['diem_mieng'].initial = detail_mark.diem_mieng
-#     form.fields['diem_15_phut'].initial = detail_mark.diem_15_phut
-#     form.fields['diem_45_phut'].initial = detail_mark.diem_45_phut
-#     form.fields['diem_thi'].initial = detail_mark.diem_thi
-#     context = {
-#         "form": form,
-#         "mark_id": mark_id,
-#         "tuition_id": tuition_id,
-#         "ma_lop": ma_lop,
-#     }
-#     return render(request, 'teacher_templates/edit_mark_template.html', context)
-#
-#
-# def edit_mark_save(request, tuition_id, ma_lop, mark_id):
-#     if request.method != "POST":
-#         messages.error(request, "Invalid Method")
-#         return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
-#     else:
-#         form = MarkForm(request.POST)
-#
-#         if form.is_valid():
-#             diem_mieng = form.cleaned_data['diem_mieng']
-#             diem_15_phut = form.cleaned_data['diem_15_phut']
-#             diem_45_phut = form.cleaned_data['diem_45_phut']
-#             diem_thi = form.cleaned_data['diem_thi']
-#             try:
-#                 ds = DiemSo.objects.get(id=mark_id)
-#                 dsct = DiemSo_ChiTiet.objects.get(mads=ds)
-#                 dsct.diem_mieng = diem_mieng
-#                 dsct.diem_15_phut = diem_15_phut
-#                 dsct.diem_45_phut = diem_45_phut
-#                 dsct.diem_thi = diem_thi
-#                 dtb = (diem_mieng + diem_15_phut + diem_45_phut * 2 + diem_thi * 3) / 7
-#                 # print(type(dtb))
-#                 # print(dtb)
-#                 ds.diem = round(dtb, 2)
-#                 ds.trang_thai = "Đã nhập"
-#                 ds.save()
-#                 dsct.save()
-#                 messages.success(request, "Chỉnh sửa thành công!")
-#                 return redirect('/qldh/quan_ly_chi_tiet_diem_so/' + tuition_id + '/' + ma_lop + '/' + mark_id)
-#             except:
-#                 messages.error(request, "Chỉnh sửa không thành công!!")
-#                 return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
-#         else:
-#             return redirect('/qldh/chinh_sua_diem_so/' + mark_id)
+@csrf_exempt
+def luu_diem_so(request):
+    if request.accepts("application/json") and request.method == "POST":
+        try:
+            id_ds = request.POST.get('id_ds')
+            m1 = request.POST.get('m1')
+            m2 = request.POST.get('m2')
+            m3 = request.POST.get('m3')
+            p1 = request.POST.get('p1')
+            p2 = request.POST.get('p2')
+            p3 = request.POST.get('p3')
+            p4 = request.POST.get('p4')
+            t1 = request.POST.get('t1')
+            t2 = request.POST.get('t2')
+            t3 = request.POST.get('t3')
+            t4 = request.POST.get('t4')
+            t5 = request.POST.get('t5')
+            t6 = request.POST.get('t6')
+            t7 = request.POST.get('t7')
+            t8 = request.POST.get('t8')
+            hk = request.POST.get('hk')
+            diem_so = DiemSo.objects.get(id=id_ds)
+            diem_so.m1 = m1
+            diem_so.m2 = m2
+            diem_so.m3 = m3
+            diem_so.p1 = p1
+            diem_so.p2 = p2
+            diem_so.p3 = p3
+            diem_so.p4 = p4
+            diem_so.t1 = t1
+            diem_so.t2 = t2
+            diem_so.t3 = t3
+            diem_so.t4 = t4
+            diem_so.t5 = t5
+            diem_so.t6 = t6
+            diem_so.t7 = t7
+            diem_so.t8 = t8
+            diem_so.hk = hk
+            diem_so.save()
+            return JsonResponse({"success": "success"}, content_type="application/json", safe=False)
+        except Exception:
+            traceback.print_exc()
+            return JsonResponse({"error": "Lỗi: Tải dữ liệu không thành công"}, status=400)
+    return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
+
+
+@csrf_exempt
+def bang_diem_pdf(request, ma_lop):
+    dirname = os.path.dirname(__file__) + "\\tmp"
+    # data
+    nam_hoc = NamHoc.objects.get(hien_tai=True)
+    hoc_ky = HocKy.objects.get(hien_tai=True)
+    #ma_lop = request.POST.get('ma_lop')
+    lop = LopHoc.objects.get(ma_lop=ma_lop)
+    giao_vien = GiaoVien.objects.get(magv=request.user.username)
+    mon = MonHoc.objects.get(ma_mon=giao_vien.day_mon.ma_mon)
+    filter_bang_diem = DiemSo.objects.filter(nam_hoc=nam_hoc, hoc_ky=hoc_ky, mon=mon)
+    list_bang_diem = []
+    for item in filter_bang_diem:
+        list_bang_diem.append(item)
+
+    context = {
+        'namhoc': nam_hoc.mo_ta,
+        'hocky': hoc_ky.hoc_ky,
+        'giaovien': giao_vien.magv.last_name + ' ' + giao_vien.magv.first_name,
+        "bang_diem": list_bang_diem,
+        "lop": lop,
+        "mon": mon
+    }
+    html_string = render_to_string('pdf_templates/bang_diem_template.html', context)
+
+    file_name = 'bang-diem-' + lop.ten_lop + '-' + mon.ma_mon + '.pdf'
+
+    html = HTML(string=html_string)
+    html.write_pdf(target=dirname + '\\' + file_name)
+
+    fs = FileSystemStorage(dirname)
+    with fs.open(file_name) as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="' + file_name + '"'
+        return response
+    return response
 
 
 def assessment_student(request):
