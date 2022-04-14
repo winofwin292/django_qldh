@@ -6,8 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, DiemSo, \
-    KetQuaHocTap, HocKy
-from .forms import MarkForm
+    HanhKiem, HocKy
 import os
 from weasyprint import HTML
 from django.core.files.storage import FileSystemStorage
@@ -288,22 +287,20 @@ def bang_diem_pdf(request, ma_lop):
     return response
 
 
-def assessment_student(request):
+def danh_gia_hanh_kiem(request):
     try:
         lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
         ds_hs = HocSinh.objects.filter(lop=lop_cn.ma_lop)
-        # nam = NamHoc.objects.get(nam_hoc=tuition.nam_hoc.nam_hoc)
+        nam_hoc = NamHoc.objects.get(hien_tai=True)
+        hoc_ky = HocKy.objects.get(hien_tai=True)
+
         list_kq = []
-        for hs in ds_hs:
-            kqht = KetQuaHocTap.objects.get_or_create(mahs=hs, nam_hoc=lop_cn.nam_hoc.nam_hoc)
-            # print(kqht[0])
-            # print("i")
-            kq = kqht[0]
-            list_kq.append(kq)
+        for item in ds_hs:
+            hanh_kiem = HanhKiem.objects.get_or_create(mahs=item, nam_hoc=nam_hoc, hoc_ky=hoc_ky)[0]
+            list_kq.append(hanh_kiem)
     except:
         list_kq = []
         messages.error(request, "Giáo viên này không chủ nhiệm lớp nào cả")
-    # print(list_kq)
     context = {
         "lop_cn": lop_cn,
         "kqht": list_kq,
@@ -311,45 +308,45 @@ def assessment_student(request):
     return render(request, 'teacher_templates/assessment_student_template.html', context)
 
 
-def edit_assessment_student(request, student_id):
-    # lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
-    hs = HocSinh.objects.get(mahs=student_id)
-    nam = NamHoc.objects.get(nam_hoc=hs.lop.nam_hoc.nam_hoc)
-    ds = DiemSo.objects.filter(mahs=hs, nam_hoc=nam)
-    kqht = KetQuaHocTap.objects.get(mahs=hs, nam_hoc=nam)
-    list_dg = ("Xuất sắc", "Giỏi", "Khá", "Trung Bình", "Yếu", "Kém")
-    tong_diem = 0.0
-    for d in ds:
-        tong_diem += d.diem
-    diem_tb = round(tong_diem / (ds.count()), 2)
-    # print(diem_tb)
-    context = {
-        "hs": hs,
-        "ds": ds,
-        "kqht": kqht,
-        "list_dg": list_dg,
-        "diem_tb": diem_tb,
-    }
-    return render(request, 'teacher_templates/edit_assessment_student_template.html', context)
-
-
-def edit_assessment_student_save(request, student_id, kqht_id):
-    if request.method != "POST":
-        messages.error(request, "Invalid Method")
-        return redirect('assessment_student')
-    else:
-        xep_loai = request.POST.get('xep_loai')
-        hanh_kiem = request.POST.get('hanh_kiem')
-        try:
-            kqht = KetQuaHocTap.objects.get(id=kqht_id)
-            kqht.xep_loai = xep_loai
-            kqht.hanh_kiem = hanh_kiem
-            kqht.save()
-            messages.success(request, "Đánh giá thành công")
-            return redirect('assessment_student')
-        except:
-            messages.success(request, "Lỗi đánh giá")
-            return redirect('/qldh/chinh_sua_danh_gia_hoc_sinh/' + student_id)
+# def edit_assessment_student(request, student_id):
+#     # lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
+#     hs = HocSinh.objects.get(mahs=student_id)
+#     nam = NamHoc.objects.get(nam_hoc=hs.lop.nam_hoc.nam_hoc)
+#     ds = DiemSo.objects.filter(mahs=hs, nam_hoc=nam)
+#     kqht = KetQuaHocTap.objects.get(mahs=hs, nam_hoc=nam)
+#     list_dg = ("Xuất sắc", "Giỏi", "Khá", "Trung Bình", "Yếu", "Kém")
+#     tong_diem = 0.0
+#     for d in ds:
+#         tong_diem += d.diem
+#     diem_tb = round(tong_diem / (ds.count()), 2)
+#     # print(diem_tb)
+#     context = {
+#         "hs": hs,
+#         "ds": ds,
+#         "kqht": kqht,
+#         "list_dg": list_dg,
+#         "diem_tb": diem_tb,
+#     }
+#     return render(request, 'teacher_templates/edit_assessment_student_template.html', context)
+#
+#
+# def edit_assessment_student_save(request, student_id, kqht_id):
+#     if request.method != "POST":
+#         messages.error(request, "Invalid Method")
+#         return redirect('assessment_student')
+#     else:
+#         xep_loai = request.POST.get('xep_loai')
+#         hanh_kiem = request.POST.get('hanh_kiem')
+#         try:
+#             kqht = KetQuaHocTap.objects.get(id=kqht_id)
+#             kqht.xep_loai = xep_loai
+#             kqht.hanh_kiem = hanh_kiem
+#             kqht.save()
+#             messages.success(request, "Đánh giá thành công")
+#             return redirect('assessment_student')
+#         except:
+#             messages.success(request, "Lỗi đánh giá")
+#             return redirect('/qldh/chinh_sua_danh_gia_hoc_sinh/' + student_id)
 
 
 def profile_teacher(request):

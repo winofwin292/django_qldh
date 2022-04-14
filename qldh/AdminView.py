@@ -809,29 +809,29 @@ def them_moi_giang_day(request):
                     minute_start = 10
             #Thêm mới sự kiện trên google cal
 
-            # service = get_calendar_service()
-            # now_datetime = datetime.now().date()
-            # now_dateofweek = datetime.now().isoweekday()
-            # start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day,
-            #                       hour_start, minute_start) + timedelta(days=((int(thu)-1)-now_dateofweek))
-            # end_time = start_time + timedelta(minutes=45)
-            # event_result = service.events().insert(calendarId='primary',
-            #                                        body={
-            #                                            "summary": lop.ten_lop,
-            #                                            "description": lop.ten_lop + ' - Tiết ' + tiet,
-            #                                            "start": {"dateTime": start_time.isoformat(),
-            #                                                      "timeZone": 'Asia/Ho_Chi_Minh'},
-            #                                            "end": {"dateTime": end_time.isoformat(),
-            #                                                    "timeZone": 'Asia/Ho_Chi_Minh'},
-            #                                            'recurrence': [
-            #                                                'RRULE:FREQ=WEEKLY;COUNT=18'
-            #                                            ],
-            #                                            # 'attendees': [
-            #                                            #     {'email': 'winofwin292@gmail.com'},
-            #                                            # ],
-            #                                        }
-            #                                        ).execute()
-            # gd.cal_id = event_result['id']
+            service = get_calendar_service()
+            now_datetime = datetime.now().date()
+            now_dateofweek = datetime.now().isoweekday()
+            start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day,
+                                  hour_start, minute_start) + timedelta(days=((int(thu)-1)-now_dateofweek))
+            end_time = start_time + timedelta(minutes=45)
+            event_result = service.events().insert(calendarId='primary',
+                                                   body={
+                                                       "summary": lop.ten_lop,
+                                                       "description": lop.ten_lop,
+                                                       "start": {"dateTime": start_time.isoformat(),
+                                                                 "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                       "end": {"dateTime": end_time.isoformat(),
+                                                               "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                       'recurrence': [
+                                                           'RRULE:FREQ=WEEKLY;COUNT=18'
+                                                       ],
+                                                       # 'attendees': [
+                                                       #     {'email': 'winofwin292@gmail.com'},
+                                                       # ],
+                                                   }
+                                                   ).execute()
+            gd.cal_id = event_result['id']
 
             gd.save()
             return JsonResponse({"success": "Thêm mới thành công"}, content_type="application/json", safe=False)
@@ -855,6 +855,7 @@ def chinh_sua_lop_giang_day(request):
             service = get_calendar_service()
             event = service.events().get(calendarId='primary', eventId=giang_day.cal_id).execute()
             event['summary'] = lop.ten_lop
+            event["description"] = lop.ten_lop
             updated_event = service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
             giang_day.save()
             return JsonResponse({"success": "Chỉnh sửa thành công"}, content_type="application/json", safe=False)

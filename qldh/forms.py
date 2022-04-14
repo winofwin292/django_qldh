@@ -324,10 +324,3 @@ class EditStudentForm(forms.Form):
             Row(Div(FloatingField('ngay_sinh'), css_class='col-md'),
                 Div(FloatingField('lop'), css_class='col-md')),
         )
-
-
-class MarkForm(forms.Form):
-    diem_mieng = forms.FloatField(label="Điểm miệng", max_value=10, min_value=0, widget=forms.NumberInput(attrs={"class": "form-control"}))
-    diem_15_phut = forms.FloatField(label="Điểm 15 phút", max_value=10, min_value=0, widget=forms.NumberInput(attrs={"class": "form-control"}))
-    diem_45_phut = forms.FloatField(label="Điểm 45 phút", max_value=10, min_value=0, widget=forms.NumberInput(attrs={"class": "form-control"}))
-    diem_thi = forms.FloatField(label="Điểm thi", max_value=10, min_value=0, widget=forms.NumberInput(attrs={"class": "form-control"}))

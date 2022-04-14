@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, DiemSo, KetQuaHocTap
+from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, GiaoVien, HocSinh, GiangDay, DiemSo, HanhKiem
 
 
 def student_home(request):
@@ -59,7 +59,7 @@ def view_result_study(request):
     lop = LopHoc.objects.get(ma_lop=request.user.hocsinh.lop.ma_lop)
     nam = lop.nam_hoc.nam_hoc
     ds = DiemSo.objects.filter(mahs=request.user.username, nam_hoc=nam)
-    kqht = KetQuaHocTap.objects.get(mahs=request.user.username, nam_hoc=nam)
+    # kqht = KetQuaHocTap.objects.get(mahs=request.user.username, nam_hoc=nam)
     tong_diem = 0.0
     for d in ds:
         tong_diem += d.diem
@@ -67,7 +67,7 @@ def view_result_study(request):
     so_mon = ds.count()
     context = {
         "diem_tb": diem_tb,
-        "kqht": kqht,
+        # "kqht": kqht,
         "so_mon": so_mon,
     }
     return render(request, 'student_templates/view_result_study_template.html', context)

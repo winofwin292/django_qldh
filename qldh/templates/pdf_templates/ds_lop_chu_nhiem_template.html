@@ -32,17 +32,17 @@
             text-align: center;
             width: 100%;
         }
+        @page  {
+            size: landscape;
+        }
     </style>
 </head>
 <body>
 <div>
     <div>
         <h2>Danh sách học sinh {{ lop_cn.ten_lop|lower }}</h2>
-        <h5>Sỉ số: {{ lop_cn.si_so }}</h5>
-        <h5>Phòng học: {{ lop_cn.phong.ten_phong }}</h5>
-        <h5>Giáo viên chủ nhiệm: {{ giaovien }}</h5>
-        <h5>Năm học: {{ namhoc }}</h5>
-        <h5>Học kỳ: {{ hocky }}</h5>
+        <h5>Phòng học: {{ lop_cn.phong.ten_phong }} - Sỉ số: {{ lop_cn.si_so }}</h5>
+        <h5>Giáo viên chủ nhiệm: {{ giaovien }} - Năm học: {{ namhoc }} - Học kỳ: {{ hocky }}</h5>
     </div>
     <table>
         <thead>
