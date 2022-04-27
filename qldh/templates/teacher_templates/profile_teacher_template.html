@@ -6,119 +6,191 @@
 
 {% block main_content %}
 
-{% load static %}
+    {% load static %}
 
-<section class="content">
+    <section class="content">
         <div class="container-fluid">
 
             <div class="row">
+                <div class="form-group">
+                    <div class="col-12" id="message">
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <!-- general form elements -->
                     <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Thông tin cá nhân</h3>
-                    </div>
-                    <!-- /.card-header -->
-                    <!-- form start -->
-                    <form role="form">
-                        {% csrf_token %}
-
-                        
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
+                        <div class="card-header">
+                            <h3 class="card-title">Thông tin cá nhân</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="modal fade" id="confirmModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmModalLabel">Đổi mật khẩu</h5>
+                                        <button type="button" id="closeConfirmModal" class="btn-close"
+                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            {% csrf_token %}
+                                            <div class="card-body">
+                                                <div class="form-floating">
+                                                    <input type="password" class="form-control" name="old_password"
+                                                           id="old_password" placeholder="Mật khẩu cũ">
+                                                    <label>Mật khẩu cũ: </label>
+                                                </div>
+                                                &nbsp;
+                                                <div class="form-floating">
+                                                    <input type="password" class="form-control" name="password1"
+                                                           id="password1" placeholder="Mật khẩu mới">
+                                                    <label>Mật khẩu mới: </label>
+                                                </div>
+                                                &nbsp;
+                                                <div class="form-floating">
+                                                    <input type="password" class="form-control" name="password2"
+                                                           id="password2" placeholder="Nhập lại mật khẩu mới">
+                                                    <label>Nhập lại mật khẩu mới: </label>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="close_confirmModal" class="btn btn-secondary btn-sm"
+                                                data-bs-dismiss="modal">Đóng
                                         </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
+                                        <button type="button" id="doi_mat_khau_luu" class="btn btn-primary btn-sm">
+                                            Lưu
                                         </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
+                                    </div>
                                 </div>
-                                </div>
-                                {% endif %}
-                            
+                            </div>
+                        </div>
 
+                        <div class="modal fade" id="confirmModal2" aria-hidden="true"
+                             aria-labelledby="confirmModalLabel2" tabindex="-1" data-bs-backdrop="static">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmModalLabel2">Xác nhận</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        Lựa chọn sẽ bị mất, bạn có chắc muốn đóng
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="confirmclosed_confirm" class="btn btn-danger btn-sm">
+                                            Xác nhận đóng
+                                        </button>
+                                        <button class="btn btn-primary btn-sm" data-bs-target="#confirmModal"
+                                                data-bs-toggle="modal" data-bs-dismiss="modal">
+                                            Hủy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label>Mã giáo viên: </label>
-                                <input type="text" class="form-control" name="username" value="{{ user.username }}" readonly>
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="username"
+                                               value="{{ user.username }}"
+                                               readonly>
+                                        <label>Mã giáo viên: </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="email"
+                                               value="{{ user.email }}"
+                                               readonly>
+                                        <label>Email: </label>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <label>Email: </label>
-                                <input type="text" class="form-control" name="email" value="{{ user.email }}" readonly>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="last_name"
+                                               value="{{ user.last_name }} {{ user.first_name }}" readonly>
+                                        <label>Họ và tên: </label>
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="ngay_sinh"
+                                               value="{{ user.giaovien.ngay_sinh|date:"d-m-Y" }}" readonly>
+                                        <label>Ngày Sinh: </label>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <label>Họ: </label>
-                                <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}" readonly>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="que_quan"
+                                               value="{{ user.giaovien.que_quan }}" readonly>
+                                        <label>Quê quán: </label>
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="so_dien_thoai"
+                                               value="{{ user.giaovien.so_dien_thoai }}" readonly>
+                                        <label>Số điện thoại: </label>
+                                    </div>
+                                </div>
                             </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="day_mon"
+                                               value="{{ user.giaovien.day_mon.ten_mon }}" readonly>
+                                        <label>Môn giảng dạy: </label>
+                                    </div>
+                                </div>
 
-                            <div class="form-group">
-                                <label>Tên: </label>
-                                <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" readonly>
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="gioi_tinh"
+                                               value="{{ user.giaovien.gioi_tinh }}" readonly>
+                                        <label>Giới tính: </label>
+                                    </div>
+                                </div>
                             </div>
+                            &nbsp;
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="last_name"
+                                               value="{{ user.giaovien.trinh_do.mo_ta_trinh_do }}" readonly>
+                                        <label>Trình độ học vấn: </label>
+                                    </div>
+                                </div>
 
-                            <div class="form-group">
-                                <label>Ngày Sinh: </label>
-                                <input type="text" class="form-control" name="ngay_sinh" value="{{ user.giaovien.ngay_sinh|date:"d-m-Y" }}" readonly>
+                                <div class="col-md">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" name="last_name"
+                                               value="{{ lop_cn.ten_lop }}" readonly>
+                                        <label>Chủ nhiệm lớp: </label>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="form-group">
-                                <label>Quê quán: </label>
-                                <input type="text" class="form-control" name="que_quan" value="{{ user.giaovien.que_quan }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Số điện thoại: </label>
-                                <input type="text" class="form-control" name="so_dien_thoai" value="{{ user.giaovien.so_dien_thoai }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Môn giảng dạy: </label>
-                                <input type="text" class="form-control" name="day_mon" value="{{ user.giaovien.day_mon.ten_mon }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Giới tính: </label>
-                                <input type="text" class="form-control" name="gioi_tinh" value="{{ user.giaovien.gioi_tinh }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Trình độ học vấn: </label>
-                                <input type="text" class="form-control" name="last_name" value="{{ user.giaovien.trinh_do.mo_ta_trinh_do }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Chủ nhiệm lớp: </label>
-                                <input type="text" class="form-control" name="last_name" value="{{ lop_cn.ten_lop }}" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Ảnh đại diện: </label>
-                                <img src="{{ user.giaovien.profile_pic }}" class="img-circle elevation-2" alt="User Image" width="15%">
-                            </div>
-
-
-
                         </div>
                         <!-- /.card-body -->
 
                         <div class="card-footer">
+                                                        <div class="row">
+                                <button type="button" id="" value="chang_pass" class="btn btn-primary btn-sm button-cp"
+                                        data-bs-toggle="modal" data-bs-target="#confirmModal"> Đổi mật khẩu
+                                </button>
+                            </div>
                         </div>
-                    </form>
                     </div>
                     <!-- /.card -->
 
@@ -126,6 +198,92 @@
             </div>
 
         </div><!-- /.container-fluid -->
-      </section>
+    </section>
 
-  {% endblock main_content %}
+{% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+        function closeModal() {
+            $('#confirmModal2').modal('show');
+            $('#confirmclosed_confirm').click(function () {
+                $('#confirmModal2').modal('hide');
+                $('#confirmModal').modal('hide');
+                $('#confirmModal form')[0].reset();
+                $(".password_error").remove();
+            });
+        }
+
+        $('#closeConfirmModal').click(function () {
+            closeModal();
+        });
+        $('#close_confirmModal').click(function () {
+            closeModal();
+        });
+
+        function checkPasswordMatch() {
+            var password = $("#password1").val();
+            var confirmPassword = $("#password2").val();
+            if (password != confirmPassword) {
+                $(".password_error").remove();
+                $("<span class='password_error' style='color: red; padding: 5px; font-weight: bold;'> Mật khẩu không trùng. </span>").insertAfter("#password2")
+            } else {
+                $(".password_error").remove();
+                $("<span class='password_error' style='color: green; padding: 5px; font-weight: bold;'> Mật khẩu trùng. </span>").insertAfter("#password2")
+            }
+        }
+
+        $(document).ready(function () {
+            $("#password2").keyup(checkPasswordMatch);
+
+            $("#doi_mat_khau_luu").click(function (e) {
+                //e.stopImmediatePropagation();
+                let old_pass = $("#old_password").val();
+                let pass1 = $("#password1").val();
+                let pass2 = $("#password2").val();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'luu_doi_mat_khau' %}",
+                    data: {
+                        old_password: old_pass,
+                        password1: pass1,
+                        password2: pass2,
+                    },
+                    datatype: 'json',
+                    success: function (response) {
+                        let mess = '<div id="message" class="alert alert-success alert-dismissible fade show" role="alert"'
+                        mess += ' style="margin-top: 10px;">' + response["success"]
+                        mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                        mess += 'aria-label="Close">'
+                        mess += '<span aria-hidden="true">&times;</span>'
+                        mess += '</button></div>'
+                        $("#message").html(mess);
+                        $("#message").show("slow");
+                        $('#confirmModal').modal('hide');
+                        $('#confirmModal form')[0].reset();
+                        $("#close").click(function () {
+                            $("#message").hide("slow");
+                        });
+                    },
+                    error: function (response) {
+                        let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                        mess += ' style="margin-top: 10px;">' + response["responseJSON"]["error"]
+                        mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                        mess += 'aria-label="Close">'
+                        mess += '<span aria-hidden="true">&times;</span>'
+                        mess += '</button></div>'
+                        $("#message").html(mess);
+                        $("#message").show("slow");
+                        $('#confirmModal').modal('hide');
+                        $('#confirmModal form')[0].reset();
+                        $("#close").click(function () {
+                            $("#message").hide("slow");
+                        });
+                    }
+                });
+                $(".password_error").remove();
+            });
+        });
+    </script>
+
+{% endblock custom_js %}

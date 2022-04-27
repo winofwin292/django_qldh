@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Đánh giá hạnh kiểm {{ lop.ten_lop }}</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h2>Đánh giá hạnh kiểm {{ lop.ten_lop|lower }}</h2>
+        <h5>Giáo viên chủ nhiệm: {{ giaovien }}</h5>
+        <h5>Học kỳ: {{ hocky }} - Năm học: {{ namhoc }}</h5>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Mã Học sinh</th>
+            <th>Họ và Tên</th>
+            <th>Hạnh kiểm</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        {% for student in bang_hanh_kiem %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.mahs.mahs.username }}</td>
+                <td>{{ student.mahs.mahs.last_name }} {{ student.mahs.mahs.first_name }}</td>
+                <td>{{ student.get_hanh_kiem_display }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <p>Ngày in: {% now 'd/m/Y H:m:s' %}</p>
+</div>
+</body>
+</html>

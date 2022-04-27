@@ -68,14 +68,12 @@ urlpatterns = [
     path('lay_ds_ajax/', TeacherView.lay_danh_sach_hoc_sinh, name="lay_ds_ajax"),
     path('luu_diem_so/', TeacherView.luu_diem_so, name="luu_diem_so"),
     path('bang_diem_pdf/<ma_lop>/', TeacherView.bang_diem_pdf, name="bang_diem_pdf"),
+    path('get_hanh_kiem_ajax/', TeacherView.get_hanh_kiem_ajax, name="get_hanh_kiem_ajax"),
     path('danh_gia_hanh_kiem/', TeacherView.danh_gia_hanh_kiem, name="assessment_student"),
-    # path('chinh_sua_danh_gia_hoc_sinh/<student_id>/', TeacherView.edit_assessment_student,
-    #      name="edit_assessment_student"),
-    # path('luu_danh_gia_hoc_sinh/<student_id>/<kqht_id>/', TeacherView.edit_assessment_student_save,
-    #      name="edit_assessment_student_save"),
+    path('luu_hanh_kiem/', TeacherView.luu_hanh_kiem, name="luu_hanh_kiem"),
+    path('bang_hanh_kiem_pdf/', TeacherView.bang_hanh_kiem_pdf, name="bang_hanh_kiem_pdf"),
     path('thong_tin_ca_nhan/', TeacherView.profile_teacher, name="profile_teacher"),
-    path('doi_mat_khau/', TeacherView.change_password, name="change_password"),
-    path('luu_doi_mat_khau/', TeacherView.change_password_save, name="change_password_save"),
+    path('luu_doi_mat_khau/', TeacherView.luu_doi_mat_khau, name="luu_doi_mat_khau"),
 
     # URLS for HocSinh
     path('student_home/', StudentView.student_home, name="student_home"),

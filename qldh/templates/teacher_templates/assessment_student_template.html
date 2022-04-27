@@ -10,71 +10,99 @@
 
     <br>
     <section class="content">
-        {% if messages %}
-            <div class="form-group">
-                <div class="col-12">
-                    {% for message in messages %}
-                        {% if message.tags == "error" %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert"
-                                 style="margin-top: 10px;">
-                                {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+        <div class="modal fade" id="confirmModal" data-bs-backdrop="static" data-bs-keyboard="false"
+             tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Đánh giá hạnh kiểm</h5>
+                        <button type="button" id="closeConfirmModal" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" id="them_moi_giang_day">
+                            {% csrf_token %}
+                            <div class="form-floating">
+                                <select class="form-select" name="select-assessment" id="select-assessment">
+                                    <option value="-1">Chưa đánh giá</option>
+                                    <option value="5">Kém</option>
+                                    <option value="4">Yếu</option>
+                                    <option value="3">Trung bình</option>
+                                    <option value="2">Khá</option>
+                                    <option value="1">Giỏi</option>
+                                </select>
+                                <label for="subject">Chọn loại hạnh kiểm:</label>
                             </div>
-                        {% elif message.tags == "success" %}
-                            <div class="alert alert-success alert-dismissible fade show" role="alert"
-                                 style="margin-top: 10px;">
-                                {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="close_confirmModal" class="btn btn-secondary btn-sm"
+                                data-bs-dismiss="modal">Đóng
+                        </button>
+                        <button type="button" id="luu_hanh_kiem" class="btn btn-primary btn-sm">
+                            Lưu
+                        </button>
+                    </div>
                 </div>
             </div>
-        {% endif %}
+        </div>
+        <div class="modal fade" id="confirmModal2" aria-hidden="true" aria-labelledby="confirmModalLabel2"
+             tabindex="-1"
+             data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel2">Xác nhận</h5>
+                    </div>
+                    <div class="modal-body">
+                        Lựa chọn sẽ bị mất, bạn có chắc muốn đóng
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="confirmclosed_confirm" class="btn btn-danger btn-sm">Xác nhận
+                            đóng
+                        </button>
+                        <button class="btn btn-primary btn-sm" data-bs-target="#confirmModal"
+                                data-bs-toggle="modal"
+                                data-bs-dismiss="modal">
+                            Hủy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
+            <div class="form-group">
+                <div class="col-12" id="message">
+                </div>
+            </div>
+
             <div class="col-md-12">
                 <!-- general form elements -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Danh sách học sinh | {{ lop_cn.ten_lop }}</h3>
+                        <h3 class="card-title">Danh sách học sinh | {{ lop_cn.ten_lop }} - Năm học: {{ nam_hoc }}</h3>
 
                         <div class="card-tools">
-                                <div class="input-group input-group-sm" style="width: 210px;">
-                                    Tải xuống danh sách lớp &nbsp;&nbsp;
-                                    <a type="button" href="#" class="btn btn-default"><i
-                                            class="fa-solid fa-download"></i></a>
-                                </div>
+                            <div class="input-group input-group-sm" style="width: 210px;">
+                                Tải xuống danh sách lớp &nbsp;&nbsp;
+                                <a type="button" href="{% url 'bang_hanh_kiem_pdf' %}" class="btn btn-default"><i
+                                        class="fa-solid fa-download"></i></a>
                             </div>
+                        </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
-                        <table class="table table-hover text-nowrap">
+                        <table id="hk_table" class="table table-hover text-nowrap">
                             <thead>
                             <tr>
+                                <th>STT</th>
                                 <th>Mã Học sinh</th>
                                 <th>Họ và Tên</th>
-                                <th>Năm học</th>
                                 <th>Hạnh kiểm</th>
+                                <th>Chức năng</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            {% for kq in kqht %}
-                                <tr>
-                                    <td>{{ kq.mahs.mahs.username }}</td>
-                                    <td>{{ kq.mahs.mahs.last_name }} {{ kq.mahs.mahs.first_name }}</td>
-                                    <td>{{ kq.nam_hoc.mo_ta }}</td>
-                                    <td>{{ kq.get_hanh_kiem_display }}</td>
-                                    <td>
-                                        <a href="#"
-                                           class="btn btn-success btn-sm">Chi tiết</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-
+                            <tbody id="hk_tbody">
                             </tbody>
                         </table>
                     </div>
@@ -89,3 +117,113 @@
     </section>
 
 {% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+        let id_hk;
+
+        function closeModal() {
+            $('#confirmModal2').modal('show');
+            $('#confirmclosed_confirm').click(function () {
+                $('#confirmModal2').modal('hide');
+                $('#confirmModal').modal('hide');
+                $('#confirmModal form')[0].reset();
+            });
+        }
+
+        $('#closeConfirmModal').click(function () {
+            closeModal();
+        });
+        $('#close_confirmModal').click(function () {
+            closeModal();
+        });
+
+        function clear_table() {
+            document.getElementById('hk_tbody').innerHTML = "";
+        }
+
+        function get_hoc_sinh() {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'get_hanh_kiem_ajax' %}",
+                datatype: 'json',
+                success: function (response) {
+                    var json_data = JSON.parse(response);
+                    var table = document.getElementById('hk_tbody');
+                    var stt=1;
+                    for (key in json_data) {
+                        var row = table.insertRow(-1);
+                        row.id = json_data[key]["id"];
+                        row.insertCell(-1).innerHTML = stt;
+                        row.insertCell(-1).innerHTML = json_data[key]["mahs"];
+                        row.insertCell(-1).innerHTML = json_data[key]["hoten"];
+                        row.insertCell(-1).innerHTML = json_data[key]["hanh_kiem"];
+                        row.insertCell(-1).innerHTML = '<button type="button" id="" value="create" class="btn btn-secondary btn-sm button-ed" data-bs-toggle="modal" data-bs-target="#confirmModal"> Đánh giá </button>';
+                        stt++;
+                    }
+
+                    $('.button-ed').click(function (e) {
+                        let txt = this.parentNode.parentNode.cells[3].textContent || this.innerText;
+                        id_hk = this.parentNode.parentNode.id
+                        $("#select-assessment option").filter(function () {
+                            return this.text == txt;
+                        }).prop('selected', true);
+                    });
+                },
+                error: function (response) {
+                    alert("Vui lòng chọn giá trị hợp lệ");
+                }
+            });
+        }
+
+        get_hoc_sinh();
+
+
+        $("#luu_hanh_kiem").click(function (e) {
+            //e.stopImmediatePropagation();
+            let hk = $("#select-assessment").val()
+            $.ajax({
+                type: "POST",
+                url: "{% url 'luu_hanh_kiem' %}",
+                data: {
+                    id_hk: id_hk,
+                    hk: hk,
+                },
+                datatype: 'json',
+                success: function (response) {
+                    let mess = '<div id="message" class="alert alert-success alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["success"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#confirmModal').modal('hide');
+                    $('#confirmModal form')[0].reset();
+                    clear_table();
+                    get_hoc_sinh();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                },
+                error: function (response) {
+                    let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">' + response["responseJSON"]["error"]
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $('#confirmModal').modal('hide');
+                    $('#confirmModal form')[0].reset();
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                }
+            });
+        });
+
+    </script>
+{% endblock custom_js %}

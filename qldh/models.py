@@ -139,8 +139,6 @@ class GiangDay(models.Model):
 
 class HanhKiem(models.Model):
     mahs = models.ForeignKey(HocSinh, on_delete=models.CASCADE)
-    # xep_loai = models.CharField(max_length=50, default="Chưa đánh giá")
-    # hanh_kiem = models.CharField(max_length=50, default="Chưa đánh giá")
     hanh_kiem_data = ((1, "Giỏi"), (2, "Khá"), (3, "Trung Bình"), (4, "Yếu"), (5, "Kém"), (-1, "Chưa đánh giá"))
     hanh_kiem = models.IntegerField(default=-1, choices=hanh_kiem_data)
     nam_hoc = models.ForeignKey(NamHoc, on_delete=models.CASCADE)

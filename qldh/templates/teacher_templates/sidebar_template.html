@@ -94,16 +94,6 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    {% url 'change_password' as change_password %}
-                    <a href="{{ change_password }}"
-                       class="nav-link {% if request.path == change_password %} active {% endif %}">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>
-                            Đổi mật khẩu
-                        </p>
-                    </a>
-                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

@@ -290,63 +290,89 @@ def bang_diem_pdf(request, ma_lop):
 def danh_gia_hanh_kiem(request):
     try:
         lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
-        ds_hs = HocSinh.objects.filter(lop=lop_cn.ma_lop)
         nam_hoc = NamHoc.objects.get(hien_tai=True)
-        hoc_ky = HocKy.objects.get(hien_tai=True)
-
-        list_kq = []
-        for item in ds_hs:
-            hanh_kiem = HanhKiem.objects.get_or_create(mahs=item, nam_hoc=nam_hoc, hoc_ky=hoc_ky)[0]
-            list_kq.append(hanh_kiem)
     except:
-        list_kq = []
         messages.error(request, "Giáo viên này không chủ nhiệm lớp nào cả")
     context = {
         "lop_cn": lop_cn,
-        "kqht": list_kq,
+        "nam_hoc": nam_hoc.mo_ta,
     }
     return render(request, 'teacher_templates/assessment_student_template.html', context)
 
 
-# def edit_assessment_student(request, student_id):
-#     # lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
-#     hs = HocSinh.objects.get(mahs=student_id)
-#     nam = NamHoc.objects.get(nam_hoc=hs.lop.nam_hoc.nam_hoc)
-#     ds = DiemSo.objects.filter(mahs=hs, nam_hoc=nam)
-#     kqht = KetQuaHocTap.objects.get(mahs=hs, nam_hoc=nam)
-#     list_dg = ("Xuất sắc", "Giỏi", "Khá", "Trung Bình", "Yếu", "Kém")
-#     tong_diem = 0.0
-#     for d in ds:
-#         tong_diem += d.diem
-#     diem_tb = round(tong_diem / (ds.count()), 2)
-#     # print(diem_tb)
-#     context = {
-#         "hs": hs,
-#         "ds": ds,
-#         "kqht": kqht,
-#         "list_dg": list_dg,
-#         "diem_tb": diem_tb,
-#     }
-#     return render(request, 'teacher_templates/edit_assessment_student_template.html', context)
-#
-#
-# def edit_assessment_student_save(request, student_id, kqht_id):
-#     if request.method != "POST":
-#         messages.error(request, "Invalid Method")
-#         return redirect('assessment_student')
-#     else:
-#         xep_loai = request.POST.get('xep_loai')
-#         hanh_kiem = request.POST.get('hanh_kiem')
-#         try:
-#             kqht = KetQuaHocTap.objects.get(id=kqht_id)
-#             kqht.xep_loai = xep_loai
-#             kqht.hanh_kiem = hanh_kiem
-#             kqht.save()
-#             messages.success(request, "Đánh giá thành công")
-#             return redirect('assessment_student')
-#         except:
-#             messages.success(request, "Lỗi đánh giá")
-#             return redirect('/qldh/chinh_sua_danh_gia_hoc_sinh/' + student_id)
+@csrf_exempt
+def get_hanh_kiem_ajax(request):
+    if request.accepts("application/json") and request.method == "POST":
+        try:
+            lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
+            ds_hs = HocSinh.objects.filter(lop=lop_cn.ma_lop).order_by("mahs__first_name")
+            nam_hoc = NamHoc.objects.get(hien_tai=True)
+            hoc_ky = HocKy.objects.get(hien_tai=True)
+
+            list_kq = []
+            for item in ds_hs:
+                hanh_kiem = HanhKiem.objects.get_or_create(mahs=item, nam_hoc=nam_hoc, hoc_ky=hoc_ky)[0]
+                small_data = {"id": hanh_kiem.id, "mahs":hanh_kiem.mahs.mahs.username,
+                              "hoten": item.mahs.last_name + ' ' + item.mahs.first_name,
+                              "hanh_kiem": hanh_kiem.get_hanh_kiem_display()}
+                list_kq.append(small_data)
+
+            return JsonResponse(json.dumps(list_kq), content_type="application/json", safe=False)
+        except Exception:
+            traceback.print_exc()
+            return JsonResponse({"error": "Lỗi: Tải dữ liệu không thành công"}, status=400)
+    return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
+
+
+@csrf_exempt
+def luu_hanh_kiem(request):
+    if request.accepts("application/json") and request.method == "POST":
+        try:
+            id_hk = request.POST.get('id_hk')
+            hk = request.POST.get('hk')
+            hanh_kiem = HanhKiem.objects.get(id=id_hk)
+            hanh_kiem.hanh_kiem = hk
+            hanh_kiem.save()
+            return JsonResponse({"success": "Lưu thành công"}, content_type="application/json", safe=False)
+        except Exception:
+            traceback.print_exc()
+            return JsonResponse({"error": "Lỗi: Tải dữ liệu không thành công"}, status=400)
+    return JsonResponse({"error": "Lỗi: Sai phương thức"}, status=400)
+
+
+@csrf_exempt
+def bang_hanh_kiem_pdf(request):
+    dirname = os.path.dirname(__file__) + "\\tmp"
+    # data
+    lop_cn = LopHoc.objects.get(giao_vien_chu_nhiem=request.user.username)
+    ds_hs = HocSinh.objects.filter(lop=lop_cn.ma_lop).order_by("mahs__first_name")
+    nam_hoc = NamHoc.objects.get(hien_tai=True)
+    hoc_ky = HocKy.objects.get(hien_tai=True)
+    list_hk = []
+    for item in ds_hs:
+        hanh_kiem = HanhKiem.objects.get(mahs=item, nam_hoc=nam_hoc, hoc_ky=hoc_ky)
+        list_hk.append(hanh_kiem)
+
+    context = {
+        'namhoc': nam_hoc.mo_ta,
+        'hocky': hoc_ky.hoc_ky,
+        'giaovien': request.user.last_name + ' ' + request.user.first_name,
+        "bang_hanh_kiem": list_hk,
+        "lop": lop_cn.ten_lop,
+    }
+    html_string = render_to_string('pdf_templates/hanh_kiem_template.html', context)
+
+    file_name = 'hanh_kiem-' + lop_cn.ten_lop + '.pdf'
+
+    html = HTML(string=html_string)
+    html.write_pdf(target=dirname + '\\' + file_name)
+
+    fs = FileSystemStorage(dirname)
+    with fs.open(file_name) as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="' + file_name + '"'
+        return response
+    return response
 
 
 def profile_teacher(request):
@@ -357,18 +383,13 @@ def profile_teacher(request):
     return render(request, 'teacher_templates/profile_teacher_template.html', context)
 
 
-def change_password(request):
-    return render(request, 'teacher_templates/change_password_template.html')
-
-
-def change_password_save(request):
-    if request.method != "POST":
-        messages.error(request, "Invalid Method")
-        return redirect('change_password')
-    else:
+@csrf_exempt
+def luu_doi_mat_khau(request):
+    if request.accepts("application/json") and request.method == "POST":
         old_password = request.POST.get('old_password')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
+
         if password1 == password2:
             if request.user.check_password(old_password):
                 username = request.user.username
@@ -376,13 +397,8 @@ def change_password_save(request):
                 request.user.save()
                 user = authenticate(username=username, password=password1)
                 login(request, user)
-                messages.success(request, "Đổi mật khẩu thành công")
-                return redirect('change_password')
-                # print(request.user.check_password(old_password))
+                return JsonResponse({"success": "Đổi mật khẩu thành công"}, content_type="application/json", safe=False)
             else:
-                # print(request.user.check_password(old_password))
-                messages.error(request, "Mật khẩu cũ không đúng")
-                return redirect('change_password')
+                return JsonResponse({"error": "Lỗi: mật khẩu cũ không dúng"}, status=400)
         else:
-            messages.error(request, "Mật khẩu mới không trùng nhau")
-            return redirect('change_password')
+            return JsonResponse({"error": "Lỗi: mật  khẩu mới không trùng nhau"}, status=400)
