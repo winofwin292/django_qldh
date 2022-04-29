@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Thời khóa biểu</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .nghi_trua {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h2>Thời khóa biểu {{ lop }}</h2>
+        <h5>Năm học: {{ namhoc }} - Học kỳ: {{ hocky }}</h5>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Tiết</th>
+            <th>Thứ 2</th>
+            <th>Thứ 3</th>
+            <th>Thứ 4</th>
+            <th>Thứ 5</th>
+            <th>Thứ 6</th>
+            <th>Thứ 7</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for items in lst_sang %}
+            <tr>
+            <td>Tiết {{ forloop.counter }}</td>
+            {% for item in items %}
+                <td>{{ item }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="7" class="nghi_trua"><b>Nghỉ Trưa</b></td>
+        </tr>
+        {% for items in lst_chieu %}
+            <tr>
+            <td>Tiết {{ forloop.counter|add:"5" }}</td>
+            {% for item in items %}
+                <td>{{ item }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <p>Ngày in: {% now 'd/m/Y H:m:s' %}</p>
+</div>
+</body>
+</html>

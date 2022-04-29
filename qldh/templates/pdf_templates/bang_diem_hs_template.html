@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Bảng điểm {{ hoc_sinh.mahs.username }}</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+        body {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            width: 100%;
+        }
+
+        @page {
+            size: landscape;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <h2>Bảng điểm </h2>
+        <h5>MSH: {{ hoc_sinh.mahs.username }} - Họ và tên: {{ hoc_sinh.mahs.last_name }} {{ hoc_sinh.mahs.first_name }}</h5>
+        <h5>Học kỳ: {{ hocky }} - Năm học: {{ namhoc }}</h5>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th rowspan="2" class="align-middle">Môn</th>
+            <th colspan="3">Miệng</th>
+            <th colspan="4">15 phút</th>
+            <th colspan="8">1 tiết</th>
+            <th rowspan="2" class="align-middle">Học kỳ</th>
+            <th rowspan="2" class="align-middle">TBHK</th>
+        </tr>
+        <tr>
+            <th>M1</th>
+            <th>M2</th>
+            <th>M3</th>
+            <th>P1</th>
+            <th>P2</th>
+            <th>P3</th>
+            <th>P4</th>
+            <th>T1</th>
+            <th>T2</th>
+            <th>T3</th>
+            <th>T4</th>
+            <th>T5</th>
+            <th>T6</th>
+            <th>T7</th>
+            <th>T8</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in bang_diem %}
+            <td>{{ item.mon.ten_mon }}</td>
+            <td>{{ item.m1 }}</td>
+            <td>{{ item.m2 }}</td>
+            <td>{{ item.m3 }}</td>
+            <td>{{ item.p1 }}</td>
+            <td>{{ item.p2 }}</td>
+            <td>{{ item.p3 }}</td>
+            <td>{{ item.p4 }}</td>
+            <td>{{ item.t1 }}</td>
+            <td>{{ item.t2 }}</td>
+            <td>{{ item.t3 }}</td>
+            <td>{{ item.t4 }}</td>
+            <td>{{ item.t5 }}</td>
+            <td>{{ item.t6 }}</td>
+            <td>{{ item.t7 }}</td>
+            <td>{{ item.t8 }}</td>
+            <td>{{ item.hk }}</td>
+            <td>{{ item.tb }}</td>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <p>Ngày in: {% now 'd/m/Y H:m:s' %}</p>
+</div>
+</body>
+</html>

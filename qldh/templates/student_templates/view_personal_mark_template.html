@@ -1,173 +1,102 @@
 {% extends 'student_templates/base_template.html' %}
 
 {% block page_title %}
-    Điểm số cá nhân | Năm học: {{ nam_hoc }}
+    Điểm số | QLDH
 {% endblock page_title %}
 
 {% block main_content %}
 
-{% load static %}
+    {% load static %}
 
-<section class="content">
+    <section class="content">
         <div class="container-fluid">
-            <div class="card col-md-4">
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Học kỳ: </label>
-                    <select class="form-control" name="hoc_ky" id="hoc_ky">
-                      <option value="all">Tất cả</option>
-                        {% for hk in hoc_ky %}
-                            <option value="{{ hk }}">{{ hk }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-primary" id="hien_thi" name="hien_thi">Hiển Thị</button>
-                <input type="hidden" value="{{ nam_hoc }}" id="nam_hoc">
-            </div>
-        </div>
-            {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
-
-
             <div class="row">
+                <div class="form-group">
+                    <div class="col-12" id="message">
+                    </div>
+                </div>
 
                 <div class="col-md-12">
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Chi tiết điểm số</h3>
-
+                            <h3 class="card-title">Bảng điểm cá nhân</h3>
                             <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                                <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                <div class="input-group input-group-sm" style="width: 210px;">
+                                    Tải xuống bảng điểm &nbsp;&nbsp;
+                                    <a type="button" href="{% url 'bang_diem_hs_pdf' %}" class="btn btn-default"><i
+                                            class="fa-solid fa-download"></i></a>
                                 </div>
-                            </div>
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body table-responsive p-0" id="mark_data">
-{#                            <table class="table table-hover text-nowrap">#}
-{#                            <thead>#}
-{#                                <tr>#}
-{#                                <th>STT</th>#}
-{#                                <th>Môn</th>#}
-{#                                <th>Học kỳ</th>#}
-{#                                <th>Điểm miệng</th>#}
-{#                                <th>Điểm 15p</th>#}
-{#                                <th>Điểm 1 tiết</th>#}
-{#                                <th>Điểm thi</th>#}
-{#                                <th>Điểm trung bình</th>#}
-{#                                <th>Trạng thái chấm điểm</th>#}
-{#                                </tr>#}
-{#                            </thead>#}
-{#                            <tbody>#}
-{#                                {% for d in ds %}#}
-{#                                <tr>#}
-{#                                <td>{{ forloop.counter }}</td>#}
-{#                                <td>{{ d.mon.ten_mon }}</td>#}
-{#                                <td>{{ d.hoc_ky }}</td>#}
-{#                                <td>{{ d.diemso_chitiet.diem_mieng }}</td>#}
-{#                                <td>{{ d.diemso_chitiet.diem_15_phut }}</td>#}
-{#                                <td>{{ d.diemso_chitiet.diem_45_phut }}</td>#}
-{#                                <td>{{ d.diemso_chitiet.diem_thi }}</td>#}
-{#                                <td>{{ d.diem }}</td>#}
-{#                                <td>{{ d.trang_thai }}</td>#}
-{#                                </tr>#}
-{#                                {% endfor %}#}
-{##}
-{#                            </tbody>#}
-{#                            </table>#}
+                        <div class="card-body table-responsive p-0">
+                            <table id="ds_table" class="table table-bordered table-hover text-nowrap text-center">
+                                <thead>
+                                <tr>
+                                    <th rowspan="2" class="align-middle">Môn</th>
+                                    <th colspan="3">Miệng</th>
+                                    <th colspan="4">15 phút</th>
+                                    <th colspan="8">1 tiết</th>
+                                    <th rowspan="2" class="align-middle">Học kỳ</th>
+                                    <th rowspan="2" class="align-middle">TBHK</th>
+                                </tr>
+                                <tr>
+                                    <th>M1</th>
+                                    <th>M2</th>
+                                    <th>M3</th>
+                                    <th>P1</th>
+                                    <th>P2</th>
+                                    <th>P3</th>
+                                    <th>P4</th>
+                                    <th>T1</th>
+                                    <th>T2</th>
+                                    <th>T3</th>
+                                    <th>T4</th>
+                                    <th>T5</th>
+                                    <th>T6</th>
+                                    <th>T7</th>
+                                    <th>T8</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody_tb">
+                                {% for item in ds_ds %}
+                                    <td>{{ item.mon.ten_mon }}</td>
+                                    <td>{{ item.m1 }}</td>
+                                    <td>{{ item.m2 }}</td>
+                                    <td>{{ item.m3 }}</td>
+                                    <td>{{ item.p1 }}</td>
+                                    <td>{{ item.p2 }}</td>
+                                    <td>{{ item.p3 }}</td>
+                                    <td>{{ item.p4 }}</td>
+                                    <td>{{ item.t1 }}</td>
+                                    <td>{{ item.t2 }}</td>
+                                    <td>{{ item.t3 }}</td>
+                                    <td>{{ item.t4 }}</td>
+                                    <td>{{ item.t5 }}</td>
+                                    <td>{{ item.t6 }}</td>
+                                    <td>{{ item.t7 }}</td>
+                                    <td>{{ item.t8 }}</td>
+                                    <td>{{ item.hk }}</td>
+                                    <td>{{ item.tb }}</td>
+                                {%  endfor %}
+                                </tbody>
+                            </table>
                         </div>
                         <!-- /.card-body -->
-                        </div>
+                    </div>
                     <!-- /.card -->
-
                 </div>
             </div>
-
         </div><!-- /.container-fluid -->
-      </section>
+    </section>
 
-  {% endblock main_content %}
+{% endblock main_content %}
 
 {% block custom_js %}
     <script>
-        $(document).ready(function(){
 
-
-            $("#hien_thi").click(function () {
-                var nam_hoc = $("#nam_hoc").val()
-                var hoc_ky = $("#hoc_ky").val()
-                var i =1;
-
-                //console.log(nam_hoc)
-                //console.log(hoc_ky)
-                $.ajax({
-                    url:'{% url 'student_get_mark' %}',
-                    type:'POST',
-                    data:{nam_hoc:nam_hoc, hoc_ky:hoc_ky},
-                })
-
-                .done(function(response){
-                    var json_data = JSON.parse(response);
-                    if(json_data.length>0){
-                        var html_data = "<table class='table table-hover text-nowrap'> <thead> <tr> <th>STT</th> <th>Môn</th> <th>Học kỳ</th> <th>Điểm miệng</th> <th>Điểm 15 phút</th> <th>Điểm 1 tiết</th> <th>Điểm thi</th> <th>Điểm trung bình</th> <th>Trạng thái</th> </tr> </thead> <tbody>";
-                        for (key in json_data)
-                        {
-                            html_data+=" <tr>";
-                            html_data+="<td>"+ i +"</td>";
-                            html_data+="<td>"+ json_data[key]["mon"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["hoc_ky"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["diem_mieng"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["diem_15_phut"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["diem_45_phut"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["diem_thi"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["diem_tb"] +"</td>";
-                            html_data+="<td>"+ json_data[key]["trang_thai"] +"</td>";
-                            html_data+="</tr>";
-                            i++;
-                        }
-                        html_data+=" </tbody> </table>";
-                        $("#mark_data").html(html_data);
-                        //console.log(response)
-                    }else
-                    {
-                        $("#mark_data").html("<h5 class='card-text text-center text-red'>Học kỳ này chưa có điểm số.</h5>");
-                    }
-                })
-                .fail(function(){
-                    alert("Vui lòng chọn học kỳ hợp lệ.")
-                    $("#mark_data").html("");
-                });
-            })
-        })
 
     </script>
 
-{%  endblock custom_js %}
+{% endblock custom_js %}

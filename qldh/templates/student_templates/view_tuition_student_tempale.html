@@ -1,0 +1,225 @@
+{% extends 'student_templates/base_template.html' %}
+
+{% block page_title %}
+    Thời khóa biểu
+{% endblock page_title %}
+
+{% block main_content %}
+
+    {% load static %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-12" id="message">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Thời khóa biểu cá nhân</h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 210px;">
+                                    Tải xuống thời khóa biểu &nbsp;&nbsp;
+                                    <a type="button" href="{% url 'tkb_hs_pdf' %}" class="btn btn-default"><i
+                                            class="fa-solid fa-download"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" id="tuition_data">
+                            <table id="gd_table" class="table table-bordered text-center">
+                                <thead>
+                                <tr>
+                                    <th>Tiết</th>
+                                    <th>Thứ 2</th>
+                                    <th>Thứ 3</th>
+                                    <th>Thứ 4</th>
+                                    <th>Thứ 5</th>
+                                    <th>Thứ 6</th>
+                                    <th>Thứ 7</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Tiết 1</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 2</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 3</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 4</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 5</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"><b>Nghỉ Trưa</b></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 6</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 7</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 8</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tiết 9</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+    <script>
+        function addButton() {
+            var table = document.getElementById('gd_table');
+            for (let i = 1; i <= 5; i++) {
+                for (let j = 1; j <= 6; j++) {
+                    table.rows[i].cells[j].innerHTML = 'Trống'
+                }
+            }
+
+            for (let i = 7; i <= 10; i++) {
+                for (let j = 1; j <= 6; j++) {
+                    table.rows[i].cells[j].innerHTML = 'Trống'
+                }
+            }
+        }
+
+        $(document).ready(function () {
+        addButton();
+            $.ajax({
+                url: '{% url 'student_get_tuition' %}',
+                type: 'POST',
+                success: function (response) {
+                    var json_data = JSON.parse(response);
+                    var table = document.getElementById('gd_table');
+                    for (key in json_data) {
+                        if (json_data[key]["1"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[1].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+
+                        if (json_data[key]["2"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[2].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["3"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[3].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["4"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[4].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["5"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[5].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["6"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[6].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["7"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[7].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["8"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[8].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                        if (json_data[key]["9"] == true) {
+                            let html_data = '<b>' + json_data[key]["mon"] + '</b>'
+                            table.rows[9].cells[json_data[key]["thu"] - 1].innerHTML = html_data
+                        }
+                    }
+                },
+                error: function (response) {
+                    let mess = '<div id="message" class="alert alert-danger alert-dismissible fade show" role="alert"'
+                    mess += ' style="margin-top: 10px;">Không tải được thời khóa biểu'
+                    mess += '<button id="close" type="button" class="close" data-dismiss="alert"'
+                    mess += 'aria-label="Close">'
+                    mess += '<span aria-hidden="true">&times;</span>'
+                    mess += '</button></div>'
+                    $("#message").html(mess);
+                    $("#message").show("slow");
+                    $("#close").click(function () {
+                        $("#message").hide("slow");
+                    });
+                }
+            });
+        });
+
+    </script>
+
+{% endblock custom_js %}

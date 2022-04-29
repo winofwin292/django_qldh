@@ -77,9 +77,12 @@ urlpatterns = [
 
     # URLS for HocSinh
     path('student_home/', StudentView.student_home, name="student_home"),
-    path('student_get_mark/', StudentView.student_get_mark, name="student_get_mark"),
     path('xem_thong_tin_lop_hoc/', StudentView.view_classroom, name="view_classroom"),
+    path('xem_thoi_khoa_bieu/', StudentView.xem_tkb, name="xem_tkb"),
+    path('tai_xuong_tkb_hs/', StudentView.tkb_hs_pdf, name="tkb_hs_pdf"),
+    path('student_get_tuition/', StudentView.student_get_tuition, name="student_get_tuition"),
     path('xem_diem_so_ca_nhan/', StudentView.view_personal_mark, name="view_personal_mark"),
+    path('tai_xuong_bang_diem_hs/', StudentView.bang_diem_hs_pdf, name="bang_diem_hs_pdf"),
     path('xem_ket_qua_hoc_tap/', StudentView.view_result_study, name="view_result_study"),
     path('thong_tin_ca_nhan_hoc_sinh/', StudentView.profile_student, name="profile_student"),
     path('doi_mat_khau_hoc_sinh/', StudentView.change_password_student, name="change_password_student"),
