@@ -83,8 +83,6 @@ urlpatterns = [
     path('student_get_tuition/', StudentView.student_get_tuition, name="student_get_tuition"),
     path('xem_diem_so_ca_nhan/', StudentView.view_personal_mark, name="view_personal_mark"),
     path('tai_xuong_bang_diem_hs/', StudentView.bang_diem_hs_pdf, name="bang_diem_hs_pdf"),
-    path('xem_ket_qua_hoc_tap/', StudentView.view_result_study, name="view_result_study"),
     path('thong_tin_ca_nhan_hoc_sinh/', StudentView.profile_student, name="profile_student"),
-    path('doi_mat_khau_hoc_sinh/', StudentView.change_password_student, name="change_password_student"),
-    path('luu_doi_mat_khau_hoc_sinh/', StudentView.change_password_student_save, name="change_password_student_save"),
+    path('luu_doi_mat_khau_hoc_sinh/', StudentView.luu_doi_mat_khau_hoc_sinh, name="luu_doi_mat_khau_hoc_sinh"),
 ]

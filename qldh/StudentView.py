@@ -20,9 +20,17 @@ def student_home(request):
 
 
 def view_classroom(request):
-    lop = LopHoc.objects.get(ma_lop=request.user.hocsinh.lop.ma_lop)
+    hoc_sinh = HocSinh.objects.get(mahs=request.user)
+    lop = LopHoc.objects.get(ma_lop=hoc_sinh.lop.ma_lop)
+    nam_hoc = NamHoc.objects.get(hien_tai=True)
+    hoc_ky = HocKy.objects.get(hien_tai=True)
+    hanh_kiem = HanhKiem.objects.get(nam_hoc=nam_hoc, hoc_ky=hoc_ky, mahs=hoc_sinh)
     context = {
         "lop": lop,
+        "hanh_kiem": hanh_kiem,
+        "hoc_sinh": hoc_sinh,
+        "nam_hoc": nam_hoc,
+        "hoc_ky": hoc_ky,
     }
     return render(request, 'student_templates/view_classroom_template.html', context)
 
@@ -154,40 +162,17 @@ def bang_diem_hs_pdf(request):
     return response
 
 
-def view_result_study(request):
-    lop = LopHoc.objects.get(ma_lop=request.user.hocsinh.lop.ma_lop)
-    nam = lop.nam_hoc.nam_hoc
-    ds = DiemSo.objects.filter(mahs=request.user.username, nam_hoc=nam)
-    # kqht = KetQuaHocTap.objects.get(mahs=request.user.username, nam_hoc=nam)
-    tong_diem = 0.0
-    for d in ds:
-        tong_diem += d.diem
-    diem_tb = round(tong_diem / (ds.count()), 2)
-    so_mon = ds.count()
-    context = {
-        "diem_tb": diem_tb,
-        # "kqht": kqht,
-        "so_mon": so_mon,
-    }
-    return render(request, 'student_templates/view_result_study_template.html', context)
-
-
 def profile_student(request):
     return render(request, 'student_templates/profile_student_template.html')
 
 
-def change_password_student(request):
-    return render(request, 'student_templates/change_password_template.html')
-
-
-def change_password_student_save(request):
-    if request.method != "POST":
-        messages.error(request, "Invalid Method")
-        return redirect('change_password_student')
-    else:
+@csrf_exempt
+def luu_doi_mat_khau_hoc_sinh(request):
+    if request.accepts("application/json") and request.method == "POST":
         old_password = request.POST.get('old_password')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
+
         if password1 == password2:
             if request.user.check_password(old_password):
                 username = request.user.username
@@ -195,13 +180,8 @@ def change_password_student_save(request):
                 request.user.save()
                 user = authenticate(username=username, password=password1)
                 login(request, user)
-                messages.success(request, "Đổi mật khẩu thành công")
-                return redirect('change_password_student')
-                # print(request.user.check_password(old_password))
+                return JsonResponse({"success": "Đổi mật khẩu thành công"}, content_type="application/json", safe=False)
             else:
-                # print(request.user.check_password(old_password))
-                messages.error(request, "Mật khẩu cũ không đúng")
-                return redirect('change_password_student')
+                return JsonResponse({"error": "Lỗi: mật khẩu cũ không dúng"}, status=400)
         else:
-            messages.error(request, "Mật khẩu mới không trùng nhau")
-            return redirect('change_password_student')
+            return JsonResponse({"error": "Lỗi: mật  khẩu mới không trùng nhau"}, status=400)

@@ -6,9 +6,9 @@
 
 {% block main_content %}
 
-{% load static %}
-&nbsp;
-<section class="content">
+    {% load static %}
+    &nbsp;
+    <section class="content">
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
@@ -17,38 +17,41 @@
                 <div class="card-body">
                     <p>Lớp: <b>{{ lop.ten_lop }}</b></p>
                     <p>Phòng học: <b>{{ lop.phong.ten_phong }}</b></p>
-                    <p>Giáo viên chủ nhiệm: <b>{{ lop.giao_vien_chu_nhiem.magv.last_name }} {{ lop.giao_vien_chu_nhiem.magv.first_name }}</b></p>
+                    <p>Giáo viên chủ nhiệm:
+                        <b>{{ lop.giao_vien_chu_nhiem.magv.last_name }} {{ lop.giao_vien_chu_nhiem.magv.first_name }}</b>
+                    </p>
                     <p>Số điện thoại giáo viên chủ nhiệm: <b>{{ lop.giao_vien_chu_nhiem.so_dien_thoai }}</b></p>
                     <p>Email giáo viên chủ nhiệm: <b>{{ lop.giao_vien_chu_nhiem.magv.email }}</b></p>
                 </div>
             </div>
-        <br>
-            {% if messages %}
-                <div class="form-group">
-                <div class="col-12">
-                    {% for message in messages %}
-                    {% if message.tags == "error" %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                    {% elif message.tags == "success" %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                    {% endif %}
-                    {% endfor %}
+                        &nbsp;
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Xem hạnh kiểm cá nhân
+                </button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Thông tin hạnh kiểm</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Họ và tên: {{ hoc_sinh.mahs.last_name }} {{ hoc_sinh.mahs.first_name }}</p>
+                        <p>Lớp: {{ lop.ten_lop }}</p>
+                        <p>Hock kỳ: {{ hoc_ky.hoc_ky }} - Năm học: {{ nam_hoc.mo_ta }}</p>
+                        <p>Loại hạnh kiểm: {{ hanh_kiem.get_hanh_kiem_display }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Đóng</button>
+{#                        <button type="button" class="btn btn-primary">Save changes</button>#}
+                    </div>
                 </div>
-                </div>
-                {% endif %}
             </div>
+        </div>
+        <!-- /.container-fluid -->
+    </section>
 
-        </div><!-- /.container-fluid -->
-      </section>
-
-  {% endblock main_content %}
+{% endblock main_content %}
