@@ -24,20 +24,20 @@ def doLogin(request):
             user_type = user.user_type
             # return HttpResponse("Username: "+request.POST.get('username') + " Password: "+request.POST.get('password'))
             if user_type == 1:
-                return redirect('admin_home')
+                return redirect('QLDH:admin_home')
             elif user_type == 2:
                 # return HttpResponse("Teacher Login")
-                return redirect('teacher_home')
+                return redirect('QLDH:teacher_home')
             elif user_type == 3:
                 # return HttpResponse("Student Login")
-                return redirect('student_home')
+                return redirect('QLDH:student_home')
             else:
                 messages.error(request, "Bạn không có quyền đăng nhập!")
-                return redirect('login')
+                return redirect('QLDH:login')
         else:
             messages.error(request, "Thông tin đăng nhập không hợp lệ!")
             # return HttpResponseRedirect("/")
-            return redirect('login')
+            return redirect('QLDH:login')
 
 
 def logout_user(request):

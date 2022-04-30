@@ -331,7 +331,7 @@
         $("#subject").change(function () {
             let subject = $("#subject").val()
             $.ajax({
-                url: '{% url 'get_teacher' %}',
+                url: '{% url 'QLDH:get_teacher' %}',
                 type: 'POST',
                 data: {subject: subject},
             })
@@ -359,7 +359,7 @@
             let ma_lop = $("#select-class-edit").val()
             $.ajax({
                 type: "POST",
-                url: "{% url 'chinh_sua_lop_giang_day_ajax' %}",
+                url: "{% url 'QLDH:chinh_sua_lop_giang_day_ajax' %}",
                 data: {
                     id: id_ed,
                     ma_lop: ma_lop,
@@ -406,7 +406,7 @@
             e.stopImmediatePropagation();
             $.ajax({
                 type: "POST",
-                url: "{% url 'xoa_giang_day_ajax' %}",
+                url: "{% url 'QLDH:xoa_giang_day_ajax' %}",
                 data: {
                     id: id_ed
                 },
@@ -450,7 +450,7 @@
         function get_giang_day() {
             let teacher = $("#teacher").val()
             $.ajax({
-                url: '{% url 'get_tuition' %}',
+                url: '{% url 'QLDH:get_tuition' %}',
                 type: 'POST',
                 data: {teacher: teacher},
                 success: function (response) {
@@ -539,7 +539,7 @@
             let ma_lop_cr = $("#select-class").val()
             $.ajax({
                 type: "POST",
-                url: "{% url 'them_moi_giang_day_ajax' %}",
+                url: "{% url 'QLDH:them_moi_giang_day_ajax' %}",
                 data: {
                     teacher: teacher_cr,
                     ma_lop: ma_lop_cr,

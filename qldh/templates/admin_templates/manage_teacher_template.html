@@ -36,11 +36,11 @@
                             {% with file_name="ThongTinGiaoVien.xlsx" %}
                                 <div>
                                     <a class="btn btn-primary btn-sm"
-                                       href="{% url 'download_excel' file_name=file_name %}"
+                                       href="{% url 'QLDH:download_excel' file_name=file_name %}"
                                        role="button">Tải xuống file mẫu</a>
                                 </div><br>
                             {% endwith %}
-                            <form action="{% url "add_teacher_from_xls" %}" method="post" enctype="multipart/form-data">
+                            <form action="{% url "QLDH:add_teacher_from_xls" %}" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <input type="file" title="Upload excel file"
                                        accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -86,7 +86,7 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            {% url 'add_teacher_save' as action_path %}
+                            {% url 'QLDH:add_teacher_save' as action_path %}
                             {% include 'admin_templates/form_template.html' with messages=messages form=form action_path=action_path button_text="Thêm giáo viên" %}
                         </div>
                     </div>
@@ -217,14 +217,14 @@
             function get_teacher() {
                 var subject = $("#subject").val()
                 $.ajax({
-                    url: '{% url 'admin_get_teacher' %}',
+                    url: '{% url 'QLDH:admin_get_teacher' %}',
                     type: 'POST',
                     data: {subject: subject},
                 })
                     .done(function (response) {
                         var json_data = JSON.parse(response);
                         if (json_data.length > 0) {
-                            var html_data = "<table class='table table-hover text-nowrap'> <thead> <tr> <th>Mã Giáo Viên</th> <th>Họ và Tên</th> <th>Email</th> <th>Quên Quán</th> <th>Số điện thoại</th> <th>Giới tính</th> <th>Ngày sinh</th> <th>Môn giảng dạy</th> <th>Trình độ</th> <th>Ảnh</th> </tr> </thead> <tbody>";
+                            var html_data = "<table class='table table-hover text-nowrap'> <thead> <tr> <th>Mã Giáo Viên</th> <th>Họ và Tên</th> <th>Email</th> <th>Quên Quán</th> <th>Số điện thoại</th> <th>Giới tính</th> <th>Ngày sinh</th> <th>Môn giảng dạy</th> <th>Trình độ</th> </tr> </thead> <tbody>";
                             for (key in json_data) {
                                 html_data += " <tr>";
                                 html_data += "<td>" + json_data[key]["magv"] + "</td>";
@@ -236,7 +236,6 @@
                                 html_data += "<td>" + json_data[key]["ngay_sinh"] + "</td>";
                                 html_data += "<td>" + json_data[key]["day_mon"] + "</td>";
                                 html_data += "<td>" + json_data[key]["trinh_do"] + "</td>";
-                                html_data += "<td><img src='" + json_data[key]["profile_pic"] + "' style='width: 40px;' /></td>";
                                 html_data += "<td><a href='/qldh/chinh_sua_giao_vien/" + json_data[key]["magv"] + "/' class='btn btn-success btn-sm'>Chỉnh sửa</a> ";
                                 html_data += "<a href='/qldh/xoa_giao_vien/" + json_data[key]["magv"] + "/' class='btn btn-danger  btn-sm' onclick='return confirm(" + "&quot;Bạn có thật sự muốn xóa giáo viên này?&quot;" + ");'>Xóa</a></td>";
                                 html_data += "</tr>";

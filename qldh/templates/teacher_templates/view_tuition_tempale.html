@@ -23,7 +23,7 @@
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 210px;">
                                     Tải xuống lịch giảng dạy &nbsp;&nbsp;
-                                    <a type="button" href="{% url 'tkb_gv_pdf' %}" class="btn btn-default"><i
+                                    <a type="button" href="{% url 'QLDH:tkb_gv_pdf' %}" class="btn btn-default"><i
                                             class="fa-solid fa-download"></i></a>
                                 </div>
                             </div>
@@ -160,7 +160,7 @@
         $(document).ready(function () {
             addButton();
             $.ajax({
-                url: '{% url 'teacher_get_tuition' %}',
+                url: '{% url 'QLDH:teacher_get_tuition' %}',
                 type: 'POST',
                 success: function (response) {
                     var json_data = JSON.parse(response);

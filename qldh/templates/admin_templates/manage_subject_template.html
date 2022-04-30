@@ -33,11 +33,11 @@
                         <div class="modal-body">
                             {% with file_name="DSMon.xlsx" %}
                                 <div>
-                                    <a class="btn btn-primary btn-sm" href="{% url 'download_excel' file_name=file_name %}"
+                                    <a class="btn btn-primary btn-sm" href="{% url 'QLDH:download_excel' file_name=file_name %}"
                                        role="button">Tải xuống file mẫu</a>
                                 </div><br>
                             {% endwith %}
-                            <form action="{% url "add_subject_from_xls" %}" method="post" enctype="multipart/form-data">
+                            <form action="{% url "QLDH:add_subject_from_xls" %}" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <input type="file" title="Upload excel file"
                                        accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -80,7 +80,7 @@
                             <button id="closeFormModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form role="form" method="POST" action="{% url 'add_subject_save' %}">
+                            <form role="form" method="POST" action="{% url 'QLDH:add_subject_save' %}">
                                 {% csrf_token %}
                                 <div class="form-floating">
                                     <input type="text" class="form-control" name="ma_mon" id="ma_mon"
@@ -184,8 +184,8 @@
                                         <td>{{ m.ma_mon }}</td>
                                         <td>{{ m.ten_mon }}</td>
                                         <td>
-                                            <a href="{% url 'edit_subject' m.ma_mon %}" class="btn btn-success btn-sm">Chỉnh sửa</a>
-                                            <a href="{% url 'delete_subject' m.ma_mon %}" class="btn btn-danger btn-sm"
+                                            <a href="{% url 'QLDH:edit_subject' m.ma_mon %}" class="btn btn-success btn-sm">Chỉnh sửa</a>
+                                            <a href="{% url 'QLDH:delete_subject' m.ma_mon %}" class="btn btn-danger btn-sm"
                                                onclick="return confirm('Bạn có thật sự muốn xóa?');">Xóa</a>
                                         </td>
                                     </tr>
@@ -240,7 +240,7 @@
 
                 if (ma_mon != "") {
                     $.ajax({
-                        url: '{% url 'kiem_tra_ma_mon' %}',
+                        url: '{% url 'QLDH:kiem_tra_ma_mon' %}',
                         type: 'POST',
                         data: {ma_mon: ma_mon}
                     })
@@ -270,7 +270,7 @@
 
                 if (ten_mon != "") {
                     $.ajax({
-                        url: '{% url 'kiem_tra_ten_mon' %}',
+                        url: '{% url 'QLDH:kiem_tra_ten_mon' %}',
                         type: 'POST',
                         data: {ten_mon: ten_mon}
                     })

@@ -129,7 +129,7 @@
         function luu_ds(id_ds, m1, m2, m3, p1, p2, p3, p4, t1, t2, t3, t4, t5, t6, t7, t8, hk) {
             $.ajax({
                 type: "POST",
-                url: "{% url 'luu_diem_so' %}",
+                url: "{% url 'QLDH:luu_diem_so' %}",
                 data: {
                     id_ds: id_ds,
                     m1: m1,
@@ -165,7 +165,7 @@
             ma_lop = $("#lop_hoc").val()
             $.ajax({
                 type: "POST",
-                url: "{% url 'lay_ds_ajax' %}",
+                url: "{% url 'QLDH:lay_ds_ajax' %}",
                 data: {
                     ma_lop: ma_lop,
                 },
@@ -269,7 +269,7 @@
             if ($("#lop_hoc").val() == 'default') {
                 alert("Vui lòng chọn lớp học");
             } else {
-                var link = '{% url 'bang_diem_pdf' 'ma_lop' %}';
+                var link = '{% url 'QLDH:bang_diem_pdf' 'ma_lop' %}';
                 link = link.replace('ma_lop', $("#lop_hoc").val());
                 window.location.href = link;
             }

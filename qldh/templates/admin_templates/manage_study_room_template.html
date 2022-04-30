@@ -35,11 +35,11 @@
                             {% with file_name="ThongTinPhongHoc.xlsx" %}
                                 <div>
                                     <a class="btn btn-primary btn-sm"
-                                       href="{% url 'download_excel' file_name=file_name %}"
+                                       href="{% url 'QLDH:download_excel' file_name=file_name %}"
                                        role="button">Tải xuống file mẫu</a>
                                 </div><br>
                             {% endwith %}
-                            <form action="{% url "add_study_room_from_xls" %}" method="post"
+                            <form action="{% url "QLDH:add_study_room_from_xls" %}" method="post"
                                   enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <input type="file" title="Upload excel file"
@@ -86,7 +86,7 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form role="form" method="POST" action="{% url 'add_study_room_save' %}">
+                            <form role="form" method="POST" action="{% url 'QLDH:add_study_room_save' %}">
                                 {% csrf_token %}
                                 <div class="form-floating">
                                     <input type="text" class="form-control" name="ten_phong" id="ten_phong"
@@ -193,9 +193,9 @@
                                         <td>{{ sr.ten_phong }}</td>
                                         <td>{{ sr.so_luong_cho_ngoi }}</td>
                                         <td>
-                                            <a href="{% url 'edit_study_room' sr.ma_phong %}"
+                                            <a href="{% url 'QLDH:edit_study_room' sr.ma_phong %}"
                                                class="btn btn-success btn-sm">Chỉnh sửa</a>
-                                            <a href="{% url 'delete_study_room' sr.ma_phong %}"
+                                            <a href="{% url 'QLDH:delete_study_room' sr.ma_phong %}"
                                                class="btn btn-danger btn-sm"
                                                onclick="return confirm('Bạn có thật sự muốn xóa?');">Xóa</a>
                                         </td>

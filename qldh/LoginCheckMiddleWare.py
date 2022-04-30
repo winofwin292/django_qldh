@@ -21,7 +21,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 elif modulename == "qldh.views" or modulename == "django.views.static":
                     pass
                 else:
-                    return redirect("admin_home")
+                    return redirect("QLDH:admin_home")
 
             elif user.user_type == 2:
                 if modulename == "qldh.TeacherView":
@@ -29,7 +29,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 elif modulename == "qldh.views" or modulename == "django.views.static":
                     pass
                 else:
-                    return redirect("teacher_home")
+                    return redirect("QLDH:teacher_home")
 
             elif user.user_type == 3:
                 if modulename == "qldh.StudentView":
@@ -37,16 +37,16 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 elif modulename == "qldh.views" or modulename == "django.views.static":
                     pass
                 else:
-                    return redirect("student_home")
+                    return redirect("QLDH:student_home")
 
             else:
                 # if modulename == 'home.views':
                 #     pass
                 # else:
-                return redirect("login")
+                return redirect("QLDH:login")
 
         else:
-            if request.path == reverse("login") or request.path == reverse("doLogin"):
+            if request.path == reverse("QLDH:login") or request.path == reverse("QLDH:doLogin"):
                 pass
             else:
                 if modulename == "home.views" or modulename == "django.views.static":

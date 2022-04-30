@@ -23,5 +23,5 @@ urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),
     path('admin/', admin.site.urls),
     path('', include('home.urls')),
-    path('qldh/', include('qldh.urls'), name='qldh'),
+    path('qldh/', include('qldh.urls', namespace='QLDH'), name='qldh'),
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

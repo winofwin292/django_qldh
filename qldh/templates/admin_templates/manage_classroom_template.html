@@ -36,11 +36,11 @@
                             {% with file_name="ThongTinLopHoc.xlsx" %}
                                 <div>
                                     <a class="btn btn-primary btn-sm"
-                                       href="{% url 'download_excel' file_name=file_name %}"
+                                       href="{% url 'QLDH:download_excel' file_name=file_name %}"
                                        role="button">Tải xuống file mẫu</a>
                                 </div><br>
                             {% endwith %}
-                            <form action="{% url "add_classroom_from_xls" %}" method="post"
+                            <form action="{% url "QLDH:add_classroom_from_xls" %}" method="post"
                                   enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <input type="file" title="Upload excel file"
@@ -87,7 +87,7 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            {% url 'add_classroom_save' as action_path %}
+                            {% url 'QLDH:add_classroom_save' as action_path %}
                             {% include 'admin_templates/form_template.html' with messages=messages form=form action_path=action_path button_text="Thêm lớp học" %}
                         </div>
                     </div>
@@ -213,7 +213,7 @@
             function get_classroom() {
                 var khoi = $("#khoi").val()
                 $.ajax({
-                    url: '{% url 'admin_get_classroom' %}',
+                    url: '{% url 'QLDH:admin_get_classroom' %}',
                     type: 'POST',
                     data: {khoi: khoi},
                 })

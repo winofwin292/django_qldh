@@ -74,7 +74,6 @@ class GiaoVien(models.Model):
     ngay_sinh = models.DateField(default=datetime(1900, 1, 1))
     gioi_tinh = models.CharField(max_length=50, default='')
     day_mon = models.ForeignKey(MonHoc, on_delete=models.CASCADE)
-    profile_pic = models.FileField(default='')
     objects = models.Manager()
 
     def get_id(self):
@@ -102,7 +101,6 @@ class HocSinh(models.Model):
     ngay_sinh = models.DateField(default=datetime(1900, 1, 1))
     gioi_tinh = models.CharField(max_length=50)
     dan_toc = models.CharField(max_length=50)
-    profile_pic = models.FileField(default="")
     objects = models.Manager()
 
     def get_id(self):

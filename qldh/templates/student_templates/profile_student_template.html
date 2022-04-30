@@ -224,7 +224,7 @@
                 let pass2 = $("#password2").val();
                 $.ajax({
                     type: "POST",
-                    url: "{% url 'luu_doi_mat_khau_hoc_sinh' %}",
+                    url: "{% url 'QLDH:luu_doi_mat_khau_hoc_sinh' %}",
                     data: {
                         old_password: old_pass,
                         password1: pass1,

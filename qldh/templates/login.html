@@ -6,14 +6,14 @@
     <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="{% url 'login' %}">Hệ thống quản lý dạy học</a>
+    <a href="{% url 'QLDH:login' %}">Hệ thống quản lý dạy học</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Đăng nhập hệ thống</p>
 
-      <form action="{% url 'doLogin' %}" method="POST">
+      <form action="{% url 'QLDH:doLogin' %}" method="POST">
       {% csrf_token %}
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Tên đăng nhập" name="username">

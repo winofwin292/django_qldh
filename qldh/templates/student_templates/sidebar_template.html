@@ -2,7 +2,7 @@
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="{% url 'student_home' %}" class="brand-link">
+      <a href="{% url 'QLDH:student_home' %}" class="brand-link">
         <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
         <span class="brand-text font-weight-light">ESchool</span>
@@ -16,7 +16,7 @@
             <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="{% url 'student_home' %}" class="d-block">{{ user.last_name }} {{ user.first_name }}</a>
+            <a href="{% url 'QLDH:student_home' %}" class="d-block">{{ user.last_name }} {{ user.first_name }}</a>
           </div>
         </div>
 
@@ -27,7 +27,7 @@
                 with font-awesome or any other icon font library -->
 
             <li class="nav-item">
-              {% url 'student_home' as student_home %}
+              {% url 'QLDH:student_home' as student_home %}
               <a href="{{ student_home }}" class="nav-link {% if request.path == student_home %} active {% endif %}">
                 <i class="nav-icon fas fa-school"></i>
                 <p>
@@ -37,7 +37,7 @@
             </li>
 
             <li class="nav-item">
-              {% url 'view_classroom' as view_classroom %}
+              {% url 'QLDH:view_classroom' as view_classroom %}
               <a href="{{ view_classroom }}" class="nav-link {% if request.path == view_classroom %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
@@ -47,7 +47,7 @@
             </li>
 
           <li class="nav-item">
-              {% url 'xem_tkb' as xem_tkb %}
+              {% url 'QLDH:xem_tkb' as xem_tkb %}
               <a href="{{ xem_tkb }}" class="nav-link {% if request.path == xem_tkb %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
@@ -57,7 +57,7 @@
             </li>
 
             <li class="nav-item">
-              {% url 'view_personal_mark' as view_personal_mark %}
+              {% url 'QLDH:view_personal_mark' as view_personal_mark %}
               <a href="{{ view_personal_mark }}" class="nav-link {% if request.path == view_personal_mark %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
@@ -67,7 +67,7 @@
             </li>
 
             <li class="nav-item">
-              {% url 'profile_student' as profile_student %}
+              {% url 'QLDH:profile_student' as profile_student %}
               <a href="{{ profile_student }}" class="nav-link {% if request.path == profile_student %} active {% endif %}">
                 <i class="nav-icon fas fa-user"></i>
                 <p>

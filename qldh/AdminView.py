@@ -105,8 +105,7 @@ def admin_get_teacher(request):
                 small_data = {"magv": tc.magv.username, "hoten": tc.magv.last_name + " " + tc.magv.first_name,
                               "email": tc.magv.email, "que_quan": tc.que_quan, "so_dien_thoai": tc.so_dien_thoai,
                               "gioi_tinh": tc.gioi_tinh, "ngay_sinh": tc.ngay_sinh.strftime("%d/%m/%Y"),
-                              "day_mon": tc.day_mon.ten_mon, "trinh_do": tc.trinh_do.mo_ta_trinh_do,
-                              "profile_pic": str(tc.profile_pic)}
+                              "day_mon": tc.day_mon.ten_mon, "trinh_do": tc.trinh_do.mo_ta_trinh_do}
                 list_data.append(small_data)
             return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
         except:
@@ -537,8 +536,11 @@ def admin_get_student(request):
                 small_data = {"mahs": hs.mahs.username, "hoten": hs.mahs.last_name + " " + hs.mahs.first_name,
                               "email": hs.mahs.email, "que_quan": hs.que_quan,
                               "ngay_sinh": hs.ngay_sinh.strftime("%d/%m/%Y"), "gioi_tinh": hs.gioi_tinh,
-                              "dan_toc": hs.dan_toc, "lop": hs.lop.ten_lop, "profile_pic": str(hs.profile_pic)}
+                              "dan_toc": hs.dan_toc, "lop": hs.lop.ten_lop}
+
                 list_data.append(small_data)
+
+
             return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
         except:
             return JsonResponse({"error": ""}, status=400)
@@ -661,13 +663,13 @@ def edit_student_save(request):
             ngay_sinh = form.cleaned_data['ngay_sinh']
             lop = form.cleaned_data['lop']
 
-            if len(request.FILES) != 0:
-                profile_pic = request.FILES['profile_pic']
-                fs = FileSystemStorage()
-                filename = fs.save(profile_pic.name, profile_pic)
-                profile_pic_url = fs.url(filename)
-            else:
-                profile_pic_url = None
+            # if len(request.FILES) != 0:
+            #     profile_pic = request.FILES['profile_pic']
+            #     fs = FileSystemStorage()
+            #     filename = fs.save(profile_pic.name, profile_pic)
+            #     profile_pic_url = fs.url(filename)
+            # else:
+            #     profile_pic_url = None
 
             try:
                 user = CustomUser.objects.get(username=mahs)
@@ -684,8 +686,8 @@ def edit_student_save(request):
                 lop_hoc = LopHoc.objects.get(ma_lop=lop)
                 hs.lop = lop_hoc
 
-                if profile_pic_url != None:
-                    hs.profile_pic = profile_pic_url
+                # if profile_pic_url != None:
+                #     hs.profile_pic = profile_pic_url
                 hs.save()
 
                 del request.session['mahs']

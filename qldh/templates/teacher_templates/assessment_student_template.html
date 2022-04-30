@@ -85,7 +85,7 @@
                         <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 210px;">
                                 Tải xuống danh sách lớp &nbsp;&nbsp;
-                                <a type="button" href="{% url 'bang_hanh_kiem_pdf' %}" class="btn btn-default"><i
+                                <a type="button" href="{% url 'QLDH:bang_hanh_kiem_pdf' %}" class="btn btn-default"><i
                                         class="fa-solid fa-download"></i></a>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
         function get_hoc_sinh() {
             $.ajax({
                 type: "POST",
-                url: "{% url 'get_hanh_kiem_ajax' %}",
+                url: "{% url 'QLDH:get_hanh_kiem_ajax' %}",
                 datatype: 'json',
                 success: function (response) {
                     var json_data = JSON.parse(response);
@@ -184,7 +184,7 @@
             let hk = $("#select-assessment").val()
             $.ajax({
                 type: "POST",
-                url: "{% url 'luu_hanh_kiem' %}",
+                url: "{% url 'QLDH:luu_hanh_kiem' %}",
                 data: {
                     id_hk: id_hk,
                     hk: hk,
