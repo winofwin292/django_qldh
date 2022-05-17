@@ -36,7 +36,13 @@ def view_classroom(request):
 
 
 def xem_tkb(request):
-    return render(request, 'student_templates/view_tuition_student_tempale.html')
+    hoc_sinh = HocSinh.objects.get(mahs=request.user)
+    lop = LopHoc.objects.get(ma_lop=hoc_sinh.lop.ma_lop)
+
+    context = {
+        "link_meet": lop.meetLink,
+    }
+    return render(request, 'student_templates/view_tuition_student_tempale.html', context)
 
 
 @csrf_exempt

@@ -45,7 +45,7 @@ def teacher_get_tuition(request):
             filter_gd = GiangDay.objects.filter(magv=request.user.username, nam_hoc=nam_hoc, hoc_ky=hoc_ky)
             list_gd = []
             for item in filter_gd:
-                small_data = {"id": item.id, "thu": item.thu, "ma_lop": item.ma_lop.ten_lop, "1": item.tiet_1,
+                small_data = {"id": item.id, "thu": item.thu, "ma_lop": item.ma_lop.ten_lop, "link": item.ma_lop.meetLink, "1": item.tiet_1,
                               "2": item.tiet_2, "3": item.tiet_3, "4": item.tiet_4, "5": item.tiet_5, "6": item.tiet_6,
                               "7": item.tiet_7, "8": item.tiet_8, "9": item.tiet_9}
                 list_gd.append(small_data)

@@ -88,6 +88,9 @@ class LopHoc(models.Model):
     giao_vien_chu_nhiem = models.OneToOneField(GiaoVien, on_delete=models.CASCADE)
     khoi = models.CharField(max_length=50)
     nam_hoc = models.ForeignKey(NamHoc, on_delete=models.CASCADE, null=True)
+    requestId = models.TextField(default="")
+    meetLink = models.TextField(default="")
+    id_cal_lh = models.TextField(default="")
     objects = models.Manager()
 
     def get_id(self):

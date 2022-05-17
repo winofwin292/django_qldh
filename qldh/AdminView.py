@@ -2,7 +2,6 @@ import traceback
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, Http404
 from django.contrib import messages
-from django.core.files.storage import FileSystemStorage
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import json
@@ -10,6 +9,7 @@ import openpyxl
 import os
 from datetime import datetime, timedelta
 from .cal_setup import get_calendar_service
+from django.utils.crypto import get_random_string
 
 from .models import CustomUser, TrinhDoHocVan, PhongHoc, LopHoc, MonHoc, NamHoc, HocKy, GiaoVien, HocSinh, GiangDay
 from .forms import AddTeacherForm, EditTeacherForm, AddClassroomForm, EditClassroomForm, AddStudentForm, EditStudentForm
@@ -406,6 +406,50 @@ def add_classroom_from_xls(request):
                 lh = LopHoc.objects.create(ma_lop=auto_ids(LopHoc, "LH", column_id='ma_lop'), ten_lop=str(row[0].value), nam_hoc=nh,
                                            khoi=str(row[2].value),
                                            phong=ph, si_so=0, giao_vien_chu_nhiem=gvcn)
+
+                req_id = get_random_string(length=10)
+
+                while LopHoc.objects.filter(requestId=req_id).exists():
+                    req_id = get_random_string(length=10)
+
+                service = get_calendar_service()
+                now_datetime = datetime.now().date()
+                if datetime.now().isoweekday() == 7:
+                    start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=7,
+                                          minute=0) + timedelta(days=1)
+                    end_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=17,
+                                        minute=0) + timedelta(days=1)
+                else:
+                    start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=7, minute=0)
+                    end_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=17, minute=0)
+                event_result = service.events().insert(calendarId='primary',
+                                                       body={
+                                                           "summary": ten_lop,
+                                                           "description": ten_lop,
+                                                           "start": {"dateTime": start_time.isoformat(),
+                                                                     "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                           "end": {"dateTime": end_time.isoformat(),
+                                                                   "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                           "recurrence": [
+                                                               'RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR,SA;'
+                                                           ],
+                                                           # 'attendees': [
+                                                           #     {'email': 'winofwin292@gmail.com'},
+                                                           # ],
+                                                           "conferenceData": {
+                                                               "createRequest": {
+                                                                   "conferenceSolutionKey": {
+                                                                       "type": "hangoutsMeet"
+                                                                   },
+                                                                   "requestId": req_id
+                                                               }
+                                                           },
+                                                       }
+                                                       , conferenceDataVersion=1
+                                                       ).execute()
+                lh.requestId = req_id
+                lh.id_cal_lh = event_result['id']
+                lh.meetLink = event_result['hangoutLink']
                 lh.save()
             except Exception as e:
                 traceback.print_exc()
@@ -434,14 +478,58 @@ def add_classroom_save(request):
                 lh = LopHoc.objects.create(ma_lop=auto_ids(LopHoc, "LH", column_id='ma_lop'), ten_lop=ten_lop,
                                            nam_hoc=nam_hoc, khoi=khoi, phong_id=phong, si_so=0,
                                            giao_vien_chu_nhiem_id=giao_vien)
+
+                req_id = get_random_string(length=10)
+
+                while LopHoc.objects.filter(requestId=req_id).exists():
+                    req_id = get_random_string(length=10)
+
+                service = get_calendar_service()
+                now_datetime = datetime.now().date()
+                if datetime.now().isoweekday() == 7:
+                    start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=7, minute=0) + timedelta(days=1)
+                    end_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=17, minute=0) + timedelta(days=1)
+                else:
+                    start_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=7, minute=0)
+                    end_time = datetime(now_datetime.year, now_datetime.month, now_datetime.day, hour=17, minute=0)
+                event_result = service.events().insert(calendarId='primary',
+                                                       body={
+                                                           "summary": ten_lop,
+                                                           "description": ten_lop,
+                                                           "start": {"dateTime": start_time.isoformat(),
+                                                                     "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                           "end": {"dateTime": end_time.isoformat(),
+                                                                   "timeZone": 'Asia/Ho_Chi_Minh'},
+                                                           "recurrence": [
+                                                               'RRULE:FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR,SA;'
+                                                           ],
+                                                           # 'attendees': [
+                                                           #     {'email': 'winofwin292@gmail.com'},
+                                                           # ],
+                                                           "conferenceData": {
+                                                               "createRequest": {
+                                                                   "conferenceSolutionKey": {
+                                                                       "type": "hangoutsMeet"
+                                                                   },
+                                                                   "requestId": req_id
+                                                               }
+                                                           },
+                                                       }
+                                                       , conferenceDataVersion=1
+                                                       ).execute()
+                lh.requestId = req_id
+                lh.id_cal_lh = event_result['id']
+                lh.meetLink = event_result['hangoutLink']
+
                 lh.save()
                 messages.success(request, "Tạo lớp học thành công!")
-                return redirect('manage_classroom')
-            except:
+                return redirect('QLDH:manage_classroom')
+            except Exception as e:
+                traceback.print_exc()
                 messages.error(request, "Tạo không thành công!!")
-                return redirect('manage_classroom')
+                return redirect('QLDH:manage_classroom')
         else:
-            return redirect('manage_classroom')
+            return redirect('QLDH:manage_classroom')
 
 
 def edit_classroom(request, ma_lop):
@@ -464,7 +552,7 @@ def edit_classroom(request, ma_lop):
 def edit_classroom_save(request):
     if request.method != "POST":
         messages.error(request, "Lỗi phương thức")
-        return redirect('edit_classroom')
+        return redirect('QLDH:edit_classroom')
     else:
         ma_lop = request.session.get('malop')
         if ma_lop == None:
@@ -485,6 +573,12 @@ def edit_classroom_save(request):
                 lh.khoi = khoi
                 lh.phong = PhongHoc.objects.get(ma_phong=phong)
                 lh.giao_vien_chu_nhiem = GiaoVien.objects.get(magv=giao_vien)
+
+                service = get_calendar_service()
+                event = service.events().get(calendarId='primary', eventId=lh.id_cal_lh).execute()
+                event['summary'] = ten_lop
+                updated_event = service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
+
                 lh.save()
                 del request.session['malop']
                 messages.success(request, "Chỉnh sửa lớp học thành công!")
@@ -501,12 +595,14 @@ def edit_classroom_save(request):
 def delete_classroom(request, ma_lop):
     lh = LopHoc.objects.get(ma_lop=ma_lop)
     try:
+        service = get_calendar_service()
+        service.events().delete(calendarId='primary', eventId=lh.id_cal_lh).execute()
         lh.delete()
         messages.success(request, "Xóa lớp học thành công!")
-        return redirect('manage_classroom')
+        return redirect('QLDH:manage_classroom')
     except:
         messages.error(request, "Xóa không thành công!!")
-        return redirect('manage_classroom')
+        return redirect('QLDH:manage_classroom')
 
 
 def manage_student(request):
@@ -539,8 +635,6 @@ def admin_get_student(request):
                               "dan_toc": hs.dan_toc, "lop": hs.lop.ten_lop}
 
                 list_data.append(small_data)
-
-
             return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
         except:
             return JsonResponse({"error": ""}, status=400)
